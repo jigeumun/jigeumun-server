@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>지금운 | 무료 사주풀이</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #020617;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+.container {
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+}
+h1 { text-align:center; }
+.subtitle { text-align:center; color:#94a3b8; font-size:14px; margin-bottom:30px; }
+.input-group { margin-bottom:18px; }
+label { display:block; margin-bottom:6px; }
+input, select { width:100%; padding:14px; border-radius:12px; border:none; font-size:15px; }
+button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radius:14px; border:none; cursor:pointer; }
+.primary { background:#6366f1; color:white; }
+.card { background:#0f172a; padding:20px; border-radius:16px; margin-top:24px; }
+.error { color:#f87171; font-size:13px; display:none; }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🔮 지금운</h1>
+<div class="subtitle">지금 이 선택, 사주로 확인하세요.</div>
+
+<div class="input-group">
+<label>생년월일</label>
+<input type="date" id="birth">
+<div class="error" id="birthErr">입력 필요</div>
+</div>
+
+<div class="input-group">
+<label>출생시간</label>
+<input type="time" id="time">
+<label><input type="checkbox" id="timeUnknown"> 모름</label>
+<div class="error" id="timeErr">입력 필요</div>
+</div>
+
+<div class="input-group">
+<label>성별</label>
+<select id="gender">
+<option value="">선택</option>
+<option>남성</option>
+<option>여성</option>
+</select>
+<div class="error" id="genderErr">선택 필요</div>
+</div>
+
+<button id="freeBtn" class="primary">✨ 무료 사주풀이 보기</button>
+
+<div id="result" class="card" style="display:none;">
+<h3>📜 오늘의 무료 사주</h3>
+<p id="mainLuck"></p>
+
+<h4>💖 연애운</h4>
+<p id="loveLuck"></p>
+
+<hr style="opacity:0.2; margin:20px 0;">
+
+<h4>🔒 여기까지 무료입니다</h4>
+<p style="font-size:14px;">
+✔ 올해 전체 운의 흐름<br>
+✔ 상대 속마음 분석<br>
+✔ 금전 · 직업 · 시기별 운세
+</p>
+
+<button id="paymentBtn" class="primary" style="display:none;">
+💳 자세한 풀이 보기 · 2,900원
+</button>
+</div>
+
+<div id="payment" class="card" style="display:none;">
+<h3>💳 지금운 프리미엄</h3>
+<p style="font-size:14px; line-height:1.6;"> 
+✔ 2026년 전체 운세<br> 
+✔ 연애 궁합 & 재회 가능성<br> 
+✔ 금전운 폭발 시기 분석<br><br> 
+<b>결제금액 : 2,900원 (1회)</b> 
+</p>
+
+<h4>🔮 프리미엄 사주 결과</h4>
+<p id="gptResult" style="white-space:pre-line; font-size:14px; line-height:1.6;">
+사주를 불러오는 중입니다...
+</p>
+</div>
+
+<div id="refundPolicy" class="card" style="display:none; font-size:13px;">
+<h4>📌 취소 및 환불 정책</h4>
+<p>
+본 서비스는 디지털 콘텐츠 특성상<br> 
+사주 분석 결과가 제공된 이후에는 환불이 어렵습니다.<br><br> 
+단, 결제 오류 또는 서비스 미제공 등<br> 
+회사의 귀책 사유가 있는 경우에는<br> 
+결제일로부터 7일 이내 환불이 가능합니다. 
+</p> <p style="margin-top:12px; color:#94a3b8;"> 
+문의: kmatin0035@gmail.com<br><br> 
+© 2026 지금운 | 콘텐츠 서비스<br> 
+본 서비스는 참고용 콘텐츠입니다
+</p>
+</div>
+
+</div>
+
+<script src="https://js.tosspayments.com/v1"></script>
+<script>
+const mainLuckTexts = [ "지금은 멈춤 속에서 기회가 자라는 시기입니다.", 
+"과거의 선택이 다시 돌아오는 흐름입니다.", 
+"작은 결단이 큰 변화를 만듭니다.", 
+"사람을 통해 운이 열리는 시점입니다." 
+]; 
+const loveLuckTexts = [ "연애운이 서서히 살아나고 있습니다.", 
+"과거 인연과의 재연결 가능성이 있습니다.", 
+"조급함을 내려놓을수록 관계가 깊어집니다.", 
+"감정을 숨기지 않는 것이 관건입니다." 
+];
+
+document.getElementById("freeBtn").addEventListener("click", () => {
+  const birth = document.getElementById("birth").value;
+  const time = document.getElementById("time").value;
+  const timeUnknown = document.getElementById("timeUnknown").checked;
+  const gender = document.getElementById("gender").value;
+
+  birthErr.style.display = timeErr.style.display = genderErr.style.display = "none";
+  if (!birth) return birthErr.style.display="block";
+  if (!time && !timeUnknown) return timeErr.style.display="block";
+  if (!gender) return genderErr.style.display="block";
+
+  mainLuck.innerText = mainLuckTexts[Math.floor(Math.random()*mainLuckTexts.length)];
+  loveLuck.innerText = loveLuckTexts[Math.floor(Math.random()*loveLuckTexts.length)];
+
+  result.style.display = "block";
+  paymentBtn.style.display = "block";
+});
+
+// 토스 결제
+paymentBtn.addEventListener("click", () => {
+  const toss = TossPayments("test_ck_GjLJoQ1aVZ21ybq9bjRJVw6KYe2R");
+
+  toss.requestPayment("카드", {
+    amount: 2900,
+    orderId: "order_" + Date.now(),
+    orderName: "지금운 프리미엄",
+    customerName: "테스트",
+    successUrl: location.origin + location.pathname + "?payment=success",
+    failUrl: location.origin + location.pathname + "?payment=fail"
+  });
+});
+
+// ✅ 결제 성공 시
+window.addEventListener("load", () => {
+  if (new URLSearchParams(location.search).get("payment") === "success") {
+    result.style.display = "block";
+    payment.style.display = "block";
+    refundPolicy.style.display = "block";
+    fetchPremiumSaju();
+  }
+});
+
+// ⭐️ 프리미엄 사주 호출 (완성본)
+async function fetchPremiumSaju() {
+  const birth = document.getElementById("birth").value;
+  const time = document.getElementById("time").value;
+  const gender = document.getElementById("gender").value;
+
+  gptResult.innerText = "🔮 사주를 분석 중입니다...";
+
+  try {
+    const res = await fetch("/api/saju", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ birth, time, gender })
+    });
+
+    const data = await res.json();
+    gptResult.innerText = data.result || "⚠️ 사주 결과를 불러오지 못했습니다.";
+
+  } catch (e) {
+    console.error(e);
+    gptResult.innerText = "⚠️ 서버 오류가 발생했습니다.";
+  }
+}
+</script>
+</body>
+</html>
