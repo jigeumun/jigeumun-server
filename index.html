@@ -27,6 +27,49 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 .primary { background:#6366f1; color:white; }
 .card { background:#0f172a; padding:20px; border-radius:16px; margin-top:24px; }
 .error { color:#f87171; font-size:13px; display:none; }
+
+/* 추가 스타일 */
+.scoreBarWrap {
+  margin-top:15px;
+  background:#1e293b;
+  border-radius:12px;
+  overflow:hidden;
+}
+.scoreBar {
+  height:14px;
+  width:0%;
+  background:linear-gradient(90deg,#6366f1,#22d3ee);
+  transition:width 1s ease;
+}
+.scoreText {
+  margin-top:8px;
+  font-weight:bold;
+}
+
+.loader {
+  border:4px solid rgba(255,255,255,0.1);
+  border-top:4px solid #6366f1;
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  animation:spin 1s linear infinite;
+  margin:15px auto;
+}
+@keyframes spin {
+  0% { transform:rotate(0deg); }
+  100% { transform:rotate(360deg); }
+}
+
+.resultCard {
+  background:#111827;
+  padding:16px;
+  border-radius:14px;
+  margin-top:16px;
+}
+.resultCard h4 {
+  margin-top:0;
+  color:#818cf8;
+}
 </style>
 </head>
 
@@ -84,17 +127,22 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 
 <div id="payment" class="card" style="display:none;">
 <h3>💳 지금운 프리미엄</h3>
-<p style="font-size:14px; line-height:1.6;"> 
-✔ 2026년 전체 운세<br> 
-✔ 연애 궁합 & 재회 가능성<br> 
-✔ 금전운 폭발 시기 분석<br><br> 
-<b>결제금액 : 2,900원 (1회)</b> 
-</p>
 
-<h4>🔮 프리미엄 사주 결과</h4>
-<p id="gptResult" style="white-space:pre-line; font-size:14px; line-height:1.6;">
-사주를 불러오는 중입니다...
-</p>
+<div id="loadingBox" style="display:none; text-align:center;">
+<p>🔮 사주를 정밀 분석 중입니다...</p>
+<div class="loader"></div>
+</div>
+
+<div id="scoreSection" style="display:none;">
+<h4>📊 지금운 점수</h4>
+<div class="scoreBarWrap">
+<div class="scoreBar" id="scoreBar"></div>
+</div>
+<div class="scoreText" id="scoreText"></div>
+</div>
+
+<div id="gptResult"></div>
+
 </div>
 
 <div id="refundPolicy" class="card" style="display:none; font-size:13px;">
@@ -105,7 +153,8 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 단, 결제 오류 또는 서비스 미제공 등<br> 
 회사의 귀책 사유가 있는 경우에는<br> 
 결제일로부터 7일 이내 환불이 가능합니다.<br>
-</p> <p style="margin-top:12px; color:#94a3b8;"> 
+</p>
+<p style="margin-top:12px; color:#94a3b8;"> 
 문의: kmatin0035@gmail.com<br><br> 
 © 2026 지금운 | 콘텐츠 서비스<br> 
 본 서비스는 참고용 콘텐츠입니다
@@ -116,6 +165,16 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 
 <script src="https://js.tosspayments.com/v1"></script>
 <script>
+
+const paymentBtn = document.getElementById("paymentBtn");
+const result = document.getElementById("result");
+const payment = document.getElementById("payment");
+const refundPolicy = document.getElementById("refundPolicy");
+const gptResult = document.getElementById("gptResult");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+const scoreSection = document.getElementById("scoreSection");
+const loadingBox = document.getElementById("loadingBox");
 
 const mainLuckTexts = [
 "지금은 멈춤 속에서 기회가 자라는 시기입니다.",
@@ -133,40 +192,30 @@ const loveLuckTexts = [
 
 document.getElementById("freeBtn").addEventListener("click", () => {
 
-  const birth = document.getElementById("birth").value;
-  const time = document.getElementById("time").value;
+  const birth = birth.value;
+  const timeVal = time.value;
   const timeUnknown = document.getElementById("timeUnknown").checked;
-  const gender = document.getElementById("gender").value;
+  const genderVal = gender.value;
 
-  document.getElementById("birthErr").style.display = "none";
-  document.getElementById("timeErr").style.display = "none";
-  document.getElementById("genderErr").style.display = "none";
+  if (!birth) return birthErr.style.display="block";
+  if (!timeVal && !timeUnknown) return timeErr.style.display="block";
+  if (!genderVal) return genderErr.style.display="block";
 
-  if (!birth) return document.getElementById("birthErr").style.display="block";
-  if (!time && !timeUnknown) return document.getElementById("timeErr").style.display="block";
-  if (!gender) return document.getElementById("genderErr").style.display="block";
+  mainLuck.innerText = mainLuckTexts[Math.floor(Math.random()*4)];
+  loveLuck.innerText = loveLuckTexts[Math.floor(Math.random()*4)];
 
-  document.getElementById("mainLuck").innerText =
-    mainLuckTexts[Math.floor(Math.random()*mainLuckTexts.length)];
+  result.style.display = "block";
+  paymentBtn.style.display = "block";
 
-  document.getElementById("loveLuck").innerText =
-    loveLuckTexts[Math.floor(Math.random()*loveLuckTexts.length)];
-
-  document.getElementById("result").style.display = "block";
-  document.getElementById("paymentBtn").style.display = "block";
-
-  // ⭐️ 결제 전에 저장
   localStorage.setItem("sajuData", JSON.stringify({
     birth,
-    time: timeUnknown ? "모름" : time,
-    gender
+    time: timeUnknown ? "모름" : timeVal,
+    gender: genderVal
   }));
 });
 
 paymentBtn.addEventListener("click", () => {
-
   const toss = TossPayments("test_ck_GjLJoQ1aVZ21ybq9bjRJVw6KYe2R");
-
   toss.requestPayment("카드", {
     amount: 2900,
     orderId: "order_" + Date.now(),
@@ -192,13 +241,14 @@ window.addEventListener("load", () => {
 async function fetchPremiumSaju() {
 
   const saved = JSON.parse(localStorage.getItem("sajuData"));
-
   if (!saved) {
-    gptResult.innerText = "⚠️ 사주 정보가 없습니다. 다시 입력해주세요.";
+    gptResult.innerHTML = "⚠️ 사주 정보가 없습니다. 다시 입력해 주세요.";
     return;
   }
 
-  gptResult.innerText = "🔮 사주를 분석 중입니다...";
+  loadingBox.style.display = "block";
+  scoreSection.style.display = "none";
+  gptResult.innerHTML = "🔮 사주를 분석 중입니다...";
 
   try {
     const res = await fetch("/api/saju", {
@@ -208,11 +258,28 @@ async function fetchPremiumSaju() {
     });
 
     const data = await res.json();
-    gptResult.innerText = data.result || "⚠️ 사주 결과를 불러오지 못했습니다.";
+    loadingBox.style.display = "none";
+
+    const text = data.result || "⚠️ 사주 결과를 불러오지 못했습니다.";
+
+    const scoreMatch = text.match(/지금운 점수\s*[:：]?\s*(\d+)/);
+    const score = scoreMatch ? parseInt(scoreMatch[1]) : Math.floor(Math.random()*41)+60;
+
+    scoreSection.style.display = "block";
+    scoreBar.style.width = score + "%";
+    scoreText.innerText = score + "점";
+
+    const sections = text.split(/\n(?=\d+\.)/);
+    sections.forEach(sec=>{
+      const card=document.createElement("div");
+      card.className="resultCard";
+      card.innerHTML="<h4>"+sec.split("\n")[0]+"</h4><p>"+sec.substring(sec.indexOf("\n")+1)+"</p>";
+      gptResult.appendChild(card);
+    });
 
   } catch (e) {
-    console.error(e);
-    gptResult.innerText = "⚠️ 서버 오류가 발생했습니다.";
+    loadingBox.style.display = "none";
+    gptResult.innerHTML = "⚠️ 서버 오류가 발생 했습니다.";
   }
 }
 
