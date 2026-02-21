@@ -105,10 +105,6 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 단, 결제 오류 또는 서비스 미제공 등<br> 
 회사의 귀책 사유가 있는 경우에는<br> 
 결제일로부터 7일 이내 환불이 가능합니다. 
-</p> <p style="margin-top:12px; color:#94a3b8;"> 
-문의: kmatin0035@gmail.com<br><br> 
-© 2026 지금운 | 콘텐츠 서비스<br> 
-본 서비스는 참고용 콘텐츠입니다
 </p>
 </div>
 
@@ -116,24 +112,30 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 
 <script src="https://js.tosspayments.com/v1"></script>
 <script>
-const mainLuckTexts = [ "지금은 멈춤 속에서 기회가 자라는 시기입니다.", 
-"과거의 선택이 다시 돌아오는 흐름입니다.", 
-"작은 결단이 큰 변화를 만듭니다.", 
-"사람을 통해 운이 열리는 시점입니다." 
-]; 
-const loveLuckTexts = [ "연애운이 서서히 살아나고 있습니다.", 
-"과거 인연과의 재연결 가능성이 있습니다.", 
-"조급함을 내려놓을수록 관계가 깊어집니다.", 
-"감정을 숨기지 않는 것이 관건입니다." 
+
+const mainLuckTexts = [
+"지금은 멈춤 속에서 기회가 자라는 시기입니다.",
+"과거의 선택이 다시 돌아오는 흐름입니다.",
+"작은 결단이 큰 변화를 만듭니다.",
+"사람을 통해 운이 열리는 시점입니다."
+];
+
+const loveLuckTexts = [
+"연애운이 서서히 살아나고 있습니다.",
+"과거 인연과의 재연결 가능성이 있습니다.",
+"조급함을 내려놓을수록 관계가 깊어집니다.",
+"감정을 숨기지 않는 것이 관건입니다."
 ];
 
 document.getElementById("freeBtn").addEventListener("click", () => {
-  const birth = document.getElementById("birth").value;
-  const time = document.getElementById("time").value;
-  const timeUnknown = document.getElementById("timeUnknown").checked;
-  const gender = document.getElementById("gender").value;
+
+  const birth = birth.value;
+  const time = time.value;
+  const timeUnknown = timeUnknown.checked;
+  const gender = gender.value;
 
   birthErr.style.display = timeErr.style.display = genderErr.style.display = "none";
+
   if (!birth) return birthErr.style.display="block";
   if (!time && !timeUnknown) return timeErr.style.display="block";
   if (!gender) return genderErr.style.display="block";
@@ -143,10 +145,17 @@ document.getElementById("freeBtn").addEventListener("click", () => {
 
   result.style.display = "block";
   paymentBtn.style.display = "block";
+
+  // ⭐️ 결제 전에 저장
+  localStorage.setItem("sajuData", JSON.stringify({
+    birth,
+    time: timeUnknown ? "모름" : time,
+    gender
+  }));
 });
 
-// 토스 결제
 paymentBtn.addEventListener("click", () => {
+
   const toss = TossPayments("test_ck_GjLJoQ1aVZ21ybq9bjRJVw6KYe2R");
 
   toss.requestPayment("카드", {
@@ -159,21 +168,26 @@ paymentBtn.addEventListener("click", () => {
   });
 });
 
-// ✅ 결제 성공 시
 window.addEventListener("load", () => {
+
   if (new URLSearchParams(location.search).get("payment") === "success") {
+
     result.style.display = "block";
     payment.style.display = "block";
     refundPolicy.style.display = "block";
+
     fetchPremiumSaju();
   }
 });
 
-// ⭐️ 프리미엄 사주 호출 (완성본)
 async function fetchPremiumSaju() {
-  const birth = document.getElementById("birth").value;
-  const time = document.getElementById("time").value;
-  const gender = document.getElementById("gender").value;
+
+  const saved = JSON.parse(localStorage.getItem("sajuData"));
+
+  if (!saved) {
+    gptResult.innerText = "⚠️ 사주 정보가 없습니다. 다시 입력해주세요.";
+    return;
+  }
 
   gptResult.innerText = "🔮 사주를 분석 중입니다...";
 
@@ -181,7 +195,7 @@ async function fetchPremiumSaju() {
     const res = await fetch("/api/saju", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ birth, time, gender })
+      body: JSON.stringify(saved)
     });
 
     const data = await res.json();
@@ -192,6 +206,7 @@ async function fetchPremiumSaju() {
     gptResult.innerText = "⚠️ 서버 오류가 발생했습니다.";
   }
 }
+
 </script>
 </body>
 </html>
