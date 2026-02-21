@@ -28,7 +28,7 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 .card { background:#0f172a; padding:20px; border-radius:16px; margin-top:24px; }
 .error { color:#f87171; font-size:13px; display:none; }
 
-/* 추가 스타일 */
+/* 점수 바 */
 .scoreBarWrap {
   margin-top:15px;
   background:#1e293b;
@@ -46,6 +46,7 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
   font-weight:bold;
 }
 
+/* 로딩 */
 .loader {
   border:4px solid rgba(255,255,255,0.1);
   border-top:4px solid #6366f1;
@@ -60,15 +61,26 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
   100% { transform:rotate(360deg); }
 }
 
+/* ✅ 카드 디자인 업그레이드 */
 .resultCard {
   background:#111827;
-  padding:16px;
-  border-radius:14px;
-  margin-top:16px;
+  padding:18px;
+  border-radius:16px;
+  margin-top:20px;
+  border:1px solid rgba(255,255,255,0.08);
 }
+
 .resultCard h4 {
-  margin-top:0;
-  color:#818cf8;
+  margin:0 0 10px 0;
+  color:#a78bfa;
+  font-size:15px;
+}
+
+.resultCard p {
+  margin:0;
+  font-size:14px;
+  line-height:1.7;
+  color:#e5e7eb;
 }
 </style>
 </head>
@@ -234,13 +246,10 @@ paymentBtn.addEventListener("click", () => {
 });
 
 window.addEventListener("load", () => {
-
   if (new URLSearchParams(location.search).get("payment") === "success") {
-
     result.style.display = "block";
     payment.style.display = "block";
     refundPolicy.style.display = "block";
-
     fetchPremiumSaju();
   }
 });
@@ -249,13 +258,13 @@ async function fetchPremiumSaju() {
 
   const saved = JSON.parse(localStorage.getItem("sajuData"));
   if (!saved) {
-    gptResult.innerHTML = "⚠️ 사주 정보가 없습니다. 다시 입력해 주세요.";
+    gptResult.innerHTML = "⚠️ 사주 정보가 없습니다.";
     return;
   }
 
   loadingBox.style.display = "block";
   scoreSection.style.display = "none";
-  gptResult.innerHTML = "🔮 사주를 분석 중입니다...";
+  gptResult.innerHTML = "";
 
   try {
     const res = await fetch("/api/saju", {
@@ -277,16 +286,38 @@ async function fetchPremiumSaju() {
     scoreText.innerText = score + "점";
 
     const sections = text.split(/\n(?=\d+\.)/);
+
     sections.forEach(sec=>{
-      const card=document.createElement("div");
-      card.className="resultCard";
-      card.innerHTML="<h4>"+sec.split("\n")[0]+"</h4><p>"+sec.substring(sec.indexOf("\n")+1)+"</p>";
+
+      const lines = sec.trim().split("\n");
+      const title = lines[0].trim();
+
+      let bodyLines = lines.slice(1);
+
+      if(bodyLines.length > 0 && bodyLines[0].trim() === title.trim()){
+        bodyLines.shift();
+      }
+
+      const body = bodyLines.join("\n").trim();
+
+      const card = document.createElement("div");
+      card.className = "resultCard";
+
+      const h = document.createElement("h4");
+      h.innerText = title;
+
+      const p = document.createElement("p");
+      p.innerText = body || "이 항목에 대한 구체적 이유 분석이 필요합니다.";
+
+      card.appendChild(h);
+      card.appendChild(p);
+
       gptResult.appendChild(card);
     });
 
   } catch (e) {
     loadingBox.style.display = "none";
-    gptResult.innerHTML = "⚠️ 서버 오류가 발생 했습니다.";
+    gptResult.innerHTML = "⚠️ 서버 오류 발생";
   }
 }
 
