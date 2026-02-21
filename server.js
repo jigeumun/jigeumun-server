@@ -11,7 +11,8 @@ app.use(express.static(".")); // index.html 제공
 // 3️⃣ GPT 사주 생성 API
 app.post("/api/saju", async (req, res) => {
   const { birth, time, gender } = req.body;
-
+console.log("받은 값:", req.body);
+  
   const prompt = `
 당신은 20년 이상 경력의 동양 명리학 전문가입니다.
 말투는 단정적이고 자신감 있으며, 실제 유료 사주 상담처럼 설명합니다.
