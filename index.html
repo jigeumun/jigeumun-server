@@ -192,23 +192,30 @@ const loveLuckTexts = [
 
 document.getElementById("freeBtn").addEventListener("click", () => {
 
-  const birth = birth.value;
-  const timeVal = time.value;
+  const birthVal = document.getElementById("birth").value;
+  const timeVal = document.getElementById("time").value;
   const timeUnknown = document.getElementById("timeUnknown").checked;
-  const genderVal = gender.value;
+  const genderVal = document.getElementById("gender").value;
 
-  if (!birth) return birthErr.style.display="block";
-  if (!timeVal && !timeUnknown) return timeErr.style.display="block";
-  if (!genderVal) return genderErr.style.display="block";
+  document.getElementById("birthErr").style.display = "none";
+  document.getElementById("timeErr").style.display = "none";
+  document.getElementById("genderErr").style.display = "none";
 
-  mainLuck.innerText = mainLuckTexts[Math.floor(Math.random()*4)];
-  loveLuck.innerText = loveLuckTexts[Math.floor(Math.random()*4)];
+  if (!birthVal) return document.getElementById("birthErr").style.display="block";
+  if (!timeVal && !timeUnknown) return document.getElementById("timeErr").style.display="block";
+  if (!genderVal) return document.getElementById("genderErr").style.display="block";
+
+  document.getElementById("mainLuck").innerText =
+    mainLuckTexts[Math.floor(Math.random()*mainLuckTexts.length)];
+
+  document.getElementById("loveLuck").innerText =
+    loveLuckTexts[Math.floor(Math.random()*loveLuckTexts.length)];
 
   result.style.display = "block";
   paymentBtn.style.display = "block";
 
   localStorage.setItem("sajuData", JSON.stringify({
-    birth,
+    birth: birthVal,
     time: timeUnknown ? "모름" : timeVal,
     gender: genderVal
   }));
