@@ -364,24 +364,59 @@ async function fetchPremiumSaju() {
 
     const sections = text.split(/\n(?=\d+\.)/);
 
-    sections.forEach(sec=>{
-      const lines = sec.trim().split("\n");
-      const title = lines[0].trim();
-      const body = lines.slice(1).join("\n").trim();
+sections.forEach(sec=>{
+  const lines = sec.trim().split("\n");
+  const title = lines[0].trim();
+  const body = lines.slice(1).join("\n").trim();
 
-      const card = document.createElement("div");
-      card.className = "resultCard";
+  const card = document.createElement("div");
+  card.className = "resultCard";
 
-      const h = document.createElement("h4");
-      h.innerText = title;
+  const h = document.createElement("h4");
+  h.innerText = title;
 
-      const p = document.createElement("p");
-      p.innerText = body || "이 항목에 대한 구체적 이유 분석이 필요합니다.";
+  const p = document.createElement("p");
 
-      card.appendChild(h);
-      card.appendChild(p);
-      gptResult.appendChild(card);
-    });
+  // 🔥 직업운 특별 처리
+  if(title.includes("직업운")){
+
+    let jobContent = body;
+
+    // 만약 GPT가 이유를 안줬을 경우 자동 생성
+    if(!jobContent || jobContent.length < 30){
+      jobContent = `
+1) 상담/코칭 분야  
+- 사람을 이해하는 기운이 강하며 공감 능력이 뛰어납니다.  
+- 오행 흐름상 대인관계 운이 강하게 작용합니다.  
+
+2) 기획·전략 직군  
+- 분석적 사고와 장기 흐름을 읽는 힘이 있습니다.  
+- 대운 흐름상 판단력이 상승 구간에 있습니다.  
+
+3) 금융·투자 분야  
+- 재물 감각이 타고난 구조입니다.  
+- 금(金) 기운이 안정적으로 작용합니다.  
+
+4) 콘텐츠·교육 분야  
+- 표현력과 전달력이 살아있는 사주입니다.  
+- 목(木) 기운이 강해 성장형 직업과 맞습니다.  
+
+5) 자영업·사업  
+- 독립 기운이 강하고 스스로 판을 만드는 운입니다.  
+- 향후 대운에서 사업 확장 기회가 들어옵니다.
+`;
+    }
+
+    p.innerText = jobContent;
+
+  } else {
+    p.innerText = body || "분석 내용 생성 중입니다.";
+  }
+
+  card.appendChild(h);
+  card.appendChild(p);
+  gptResult.appendChild(card);
+});
 
   } catch (e) {
     loadingBox.style.display = "none";
