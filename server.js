@@ -1,15 +1,11 @@
-// 1️⃣ 환경변수 로드
 require("dotenv").config();
 
-// 2️⃣ 기본 서버 세팅
 const express = require("express");
-const fetch = require("node-fetch");
 
 const app = express();
 app.use(express.json());
-app.use(express.static(".")); // index.html 제공
+app.use(express.static("."));
 
-// 3️⃣ GPT 사주 생성 API
 app.post("/api/saju", async (req, res) => {
   const { birth, time, gender } = req.body;
   console.log("받은 값:", req.body);
@@ -30,14 +26,10 @@ app.post("/api/saju", async (req, res) => {
 - 최소 1800자 이상 작성.
 - 읽기 쉽게 줄 간격 유지.
 
-────────────────────────
-
 [입력 정보]
 - 생년월일: ${birth}
 - 출생시간: ${time}
 - 성별: ${gender}
-
-────────────────────────
 
 1. 지금운 점수
 형식:
@@ -119,9 +111,14 @@ app.post("/api/saju", async (req, res) => {
 
     const data = await response.json();
 
-    if (!data.choices) {
-      console.error("❌ OpenAI 응답 오류:", data);
-      return res.status(500).json({ error: "OpenAI 응답 오류" });
+    if (!response.ok) {
+      console.error("OpenAI API 오류:", data);
+      return res.status(500).json({ error: "OpenAI API 오류" });
+    }
+
+    if (!data.choices || !data.choices[0]) {
+      console.error("GPT 응답 구조 이상:", data);
+      return res.status(500).json({ error: "GPT 응답 구조 이상" });
     }
 
     res.json({
@@ -134,7 +131,6 @@ app.post("/api/saju", async (req, res) => {
   }
 });
 
-// 4️⃣ 서버 실행
 app.listen(3000, () => {
   console.log("지금운 서버 실행 중 👉 http://localhost:3000");
 });
