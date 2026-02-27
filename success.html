@@ -2,11 +2,50 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>결제 확인 중...</title>
+<title>결제 완료</title>
 </head>
 <body>
+
+<h2>결제 확인 중입니다...</h2>
+<div id="result"></div>
+
 <script>
-window.location.href="/?"+window.location.search;
+const urlParams = new URLSearchParams(window.location.search);
+const paymentKey = urlParams.get("paymentKey");
+const orderId = urlParams.get("orderId");
+const amount = urlParams.get("amount");
+
+if (!paymentKey || !orderId || !amount) {
+  document.getElementById("result").innerText = "잘못된 접근입니다.";
+} else {
+
+  fetch("/verify-payment", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      paymentKey,
+      orderId,
+      amount
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById("result").innerHTML =
+        "<h3>결제가 완료되었습니다 ✅</h3><p>이제 사주 결과를 보여주세요.</p>";
+    } else {
+      document.getElementById("result").innerText =
+        "결제 검증 실패: " + data.message;
+    }
+  })
+  .catch(err => {
+    document.getElementById("result").innerText =
+      "서버 오류 발생";
+  });
+}
 </script>
+
 </body>
 </html>
