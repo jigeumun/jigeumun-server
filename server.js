@@ -14,6 +14,10 @@ if (!TOSS_SECRET_KEY) {
   console.error("❌ TOSS_SECRET_KEY 환경변수 없음");
 }
 
+if (!OPENAI_API_KEY) {
+  console.error("❌ OPENAI_API_KEY 환경변수 없음");
+}
+
 //////////////////////////////////////////////////////
 // 🔮 고급 사주 분석 API
 //////////////////////////////////////////////////////
@@ -21,10 +25,27 @@ app.post("/api/saju", async (req, res) => {
   const { birth, time, gender } = req.body;
   console.log("받은 값:", req.body);
 
+  if (!birth || !gender) {
+    return res.status(400).json({ error: "필수 정보 누락" });
+  }
+
+  // 🔥 랜덤 분석 스타일 추가 (항상 같은 결과 방지)
+  const randomStyles = [
+    "재물 중심의 현실적 분석을 강화하십시오.",
+    "대운 흐름을 더욱 강조하십시오.",
+    "위험 요소를 명확히 경고하십시오.",
+    "기회 구간을 공격적으로 설명하십시오."
+  ];
+
+  const randomStyle =
+    randomStyles[Math.floor(Math.random() * randomStyles.length)];
+
   const prompt = `
   당신은 30년 경력의 최고급 명리학자입니다.
 이 고객은 실제 결제를 완료한 유료 고객입니다.
 상담 보고서 수준으로 작성하십시오.
+
+${randomStyle}
 
 ────────────────────────
 [분석 절차 – 반드시 내부적으로 수행]
@@ -41,21 +62,18 @@ app.post("/api/saju", async (req, res) => {
 
 ❗ 절대 규칙
 
-- 모든 항목 최소 기준 분량을 반드시 지킬 것
-- 절대 항목 생략 금지
-- "가능성", "~일 수 있다", "참고용" 금지
-- 단정적 어조 유지
-- 추상 표현 금지
-- 최소 2200자 이상
-- 전문가 보고서 톤 유지
+- 모든 항목 최소 기준 분량을 반드시 지킬 것 
+- 절대 항목 생략 금지 
+- "가능성", "~일 수 있다", "참고용" 금지 - 단정적 어조 유지 
+- 추상 표현 금지 
+- 최소 2200자 이상 
+- 전문가 보고서 톤 유지 
 - 줄 간격 충분히 유지
 
 [입력 정보]
 - 생년월일: ${birth}
-- 출생시간: ${time}
+- 출생시간: ${time || "모름"}
 - 성별: ${gender}
-
-────────────────────────
 
 1. 🔮 지금운 점수 (100점 만점)
 
@@ -180,21 +198,33 @@ app.post("/api/saju", async (req, res) => {
       {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "당신은 대한민국 최고 수준의 명리학자입니다." },
+          {
+            role: "system",
+            content:
+              "당신은 대한민국 최고 수준의 명리학자이며, 절대 항목을 생략하지 않습니다."
+          },
           { role: "user", content: prompt }
         ],
-        temperature: 0.6,
-        max_tokens: 3000
+        temperature: 0.8, // 🔥 조금 더 랜덤성 강화
+        max_tokens: 3500
       },
       {
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       }
     );
 
-    res.json({ result: response.data.choices[0].message.content });
+    const result =
+      response.data?.choices?.[0]?.message?.content;
+
+    if (!result) {
+      console.error("❌ GPT 응답 비어있음:", response.data);
+      return res.status(500).json({ error: "GPT 응답 오류" });
+    }
+
+    res.json({ result });
 
   } catch (error) {
     console.error("🔥 OpenAI 에러:", error.response?.data || error.message);
@@ -207,6 +237,13 @@ app.post("/api/saju", async (req, res) => {
 //////////////////////////////////////////////////////
 app.post("/verify-payment", async (req, res) => {
   const { paymentKey, orderId, amount } = req.body;
+
+  if (!paymentKey || !orderId || !amount) {
+    return res.status(400).json({
+      success: false,
+      message: "결제 검증 필수값 누락"
+    });
+  }
 
   try {
     const amountNumber = Number(amount);
@@ -222,9 +259,9 @@ app.post("/verify-payment", async (req, res) => {
         headers: {
           Authorization:
             "Basic " +
-            Buffer.from(process.env.TOSS_SECRET_KEY + ":").toString("base64"),
-          "Content-Type": "application/json",
-        },
+            Buffer.from(TOSS_SECRET_KEY + ":").toString("base64"),
+          "Content-Type": "application/json"
+        }
       }
     );
 
