@@ -2,116 +2,29 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>지금운 | 무료 사주풀이</title>
-
+<title>지금운 | 2026년 재물 흐름 분석</title>
 <style>
-body {
-  margin: 0;
-  font-family: 'Noto Sans KR', sans-serif;
-  background: #020617;
-  color: white;
-  display: flex;
-  justify-content: center;
-}
-.container {
-  width: 100%;
-  max-width: 420px;
-  padding: 24px;
-}
-h1 { text-align:center; }
-.subtitle { text-align:center; color:#94a3b8; font-size:14px; margin-bottom:30px; }
-.input-group { margin-bottom:18px; }
-label { display:block; margin-bottom:6px; }
-input, select { width:100%; padding:14px; border-radius:12px; border:none; font-size:15px; }
-button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radius:14px; border:none; cursor:pointer; }
-.primary { background:#6366f1; color:white; }
-.card { background:#0f172a; padding:20px; border-radius:16px; margin-top:24px; }
-.error { color:#f87171; font-size:13px; display:none; }
-
-/* 점수 바 */
-.scoreBarWrap {
-  margin-top:15px;
-  background:#1e293b;
-  border-radius:12px;
-  overflow:hidden;
-}
-.scoreBar {
-  height:14px;
-  width:0%;
-  background:linear-gradient(90deg,#6366f1,#22d3ee);
-  transition:width 1s ease;
-}
-.scoreText {
-  margin-top:8px;
-  font-weight:bold;
-}
-
-/* 로딩 */
-.loader {
-  border:4px solid rgba(255,255,255,0.1);
-  border-top:4px solid #6366f1;
-  border-radius:50%;
-  width:30px;
-  height:30px;
-  animation:spin 1s linear infinite;
-  margin:15px auto;
-}
-@keyframes spin {
-  0% { transform:rotate(0deg); }
-  100% { transform:rotate(360deg); }
-}
-
-/* 카드 */
-.resultCard {
-  background:#111827;
-  padding:18px;
-  border-radius:16px;
-  margin-top:20px;
-  border:1px solid rgba(255,255,255,0.08);
-}
-.resultCard h4 {
-  margin:0 0 10px 0;
-  color:#a78bfa;
-  font-size:15px;
-}
-.resultCard p {
-  margin:0;
-  font-size:14px;
-  line-height:1.7;
-  color:#e5e7eb;
-}
-
-/* 🔥 전환 유도 블록 */
-.premiumTease {
-  margin-top:20px;
-  background:linear-gradient(135deg,#1e293b,#0f172a);
-  padding:18px;
-  border-radius:16px;
-  border:1px solid rgba(99,102,241,0.4);
-}
-.premiumTease h4 {
-  margin:0 0 10px 0;
-  color:#22d3ee;
-}
-.premiumTease p {
-  font-size:14px;
-  line-height:1.6;
-  color:#cbd5e1;
-}
-
-/* 🔥 후기 */
-.reviewCard {
-  background:#0b1220;
-  padding:16px;
-  border-radius:14px;
-  margin-top:14px;
-  font-size:13px;
-  color:#cbd5e1;
-  border:1px solid rgba(255,255,255,0.05);
-}
-.reviewCard strong {
-  color:#facc15;
-}
+body{margin:0;font-family:'Noto Sans KR',sans-serif;background:#020617;color:white;display:flex;justify-content:center;}
+.container{width:100%;max-width:420px;padding:24px;}
+h1{text-align:center;font-size:22px;}
+.subtitle{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:20px;}
+.hero{text-align:center;margin-bottom:25px;}
+.hero h2{font-size:18px;margin-bottom:10px;color:#22d3ee;}
+.hero p{font-size:14px;color:#cbd5e1;line-height:1.6;}
+.priceBox{background:#111827;padding:18px;border-radius:16px;margin-top:15px;border:1px solid rgba(99,102,241,0.5);text-align:center;}
+.oldPrice{text-decoration:line-through;color:#94a3b8;font-size:13px;}
+.newPrice{font-size:20px;font-weight:bold;color:#facc15;}
+.limit{font-size:12px;color:#f87171;margin-top:5px;}
+button{width:100%;padding:16px;font-size:16px;font-weight:bold;border-radius:14px;border:none;cursor:pointer;margin-top:15px;}
+.primary{background:#6366f1;color:white;}
+.input-group{margin-bottom:18px;}
+label{display:block;margin-bottom:6px;}
+input,select{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;}
+.card{background:#0f172a;padding:20px;border-radius:16px;margin-top:24px;}
+.reviewCard{background:#0b1220;padding:16px;border-radius:14px;margin-top:14px;font-size:13px;color:#cbd5e1;}
+.blur{filter:blur(6px);pointer-events:none;}
+.footer{margin-top:40px;font-size:12px;color:#94a3b8;text-align:center;line-height:1.6;}
+.footer a{color:#22d3ee;text-decoration:none;margin:0 5px;}
 </style>
 </head>
 
@@ -119,24 +32,22 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 <div class="container">
 
 <h1>🔮 지금운</h1>
-<div class="subtitle">지금 이 선택, 사주로 확인하세요.</div>
+<div class="subtitle">2026년 재물 · 인생 흐름 정밀 분석</div>
 
-<!-- 🔥 이용자 수 표시 -->
-<div style="text-align:center; font-size:13px; color:#94a3b8; margin-bottom:20px;">
-오늘 <strong id="todayCount"></strong>명이 지금운을 분석했습니다
+<div class="hero">
+<h2>올해 돈의 흐름이 바뀌는 시점은 언제입니까?</h2>
+<p>30~50대는 운의 방향이 곧 재산의 방향입니다.<br>지금 선택이 3년 뒤 격차를 만듭니다.</p>
 </div>
 
 <div class="input-group">
 <label>생년월일</label>
 <input type="date" id="birth">
-<div class="error" id="birthErr">입력 필요</div>
 </div>
 
 <div class="input-group">
 <label>출생시간</label>
 <input type="time" id="time">
 <label><input type="checkbox" id="timeUnknown"> 모름</label>
-<div class="error" id="timeErr">입력 필요</div>
 </div>
 
 <div class="input-group">
@@ -146,284 +57,70 @@ button { width:100%; padding:16px; font-size:16px; font-weight:bold; border-radi
 <option>남성</option>
 <option>여성</option>
 </select>
-<div class="error" id="genderErr">선택 필요</div>
 </div>
 
-<button id="freeBtn" class="primary">✨ 무료 사주풀이 보기</button>
+<button id="freeBtn" class="primary">무료 흐름 먼저 확인하기</button>
 
 <div id="result" class="card" style="display:none;">
-<h3>📜 오늘의 무료 사주</h3>
+<h3>📊 무료 요약 결과</h3>
 <p id="mainLuck"></p>
 
-<h4>💖 연애운</h4>
-<p id="loveLuck"></p>
-
-<hr style="opacity:0.2; margin:20px 0;">
-
-<h4>🔒 여기까지 무료입니다</h4>
-<p style="font-size:14px;">
-✔ 앞으로 3년 대운 흐름<br>
-✔ 지금 선택이 인생에 미치는 영향<br>
-✔ 금전 · 직업 · 시기별 정밀 분석
-</p>
-
-<!-- 🔥 전환 강화 블록 -->
-<div class="premiumTease">
-<h4>💎 프리미엄에서 확인 가능</h4>
-<p>
-지금은 ‘상승 초입’ 구간입니다.<br>
-✔ 올해 돈복 흐름<br>
-✔ 반드시 피해야 할 선택 1가지<br>
-✔ 지금 해야 할 행동 1가지<br>
-✔ 당신의 운 상승 방향
-</p>
+<div class="priceBox">
+<div class="oldPrice">정상가 9,900원</div>
+<div class="newPrice">오늘 한정 4,900원</div>
+<div class="limit">※ 디지털 콘텐츠 상품</div>
 </div>
 
-<button id="paymentBtn" class="primary" style="display:none;">
-💳 지금운 완전 해석 보기 · 2,900원
+<button id="paymentBtn" class="primary">
+지금 전체 분석 보기 (4,900원)
 </button>
 </div>
 
 <div id="payment" class="card" style="display:none;">
-<h3>💳 지금운 프리미엄</h3>
-
-<div id="loadingBox" style="display:none; text-align:center;">
-<p>🔮 사주를 정밀 분석 중입니다...</p>
-<div class="loader"></div>
-</div>
-
-<div id="scoreSection" style="display:none;">
-<h4>📊 지금운 점수</h4>
-<div class="scoreBarWrap">
-<div class="scoreBar" id="scoreBar"></div>
-</div>
-<div class="scoreText" id="scoreText"></div>
-</div>
-
+<h3>🔓 정밀 분석 결과</h3>
 <div id="gptResult"></div>
-
 </div>
 
-<!-- 🔥 후기 섹션 -->
 <div class="card">
 <h4>⭐ 실제 이용 후기</h4>
-
-<div class="reviewCard">
-<strong>★★★★★</strong><br>
-“솔직히 기대 안 했는데 너무 정확해서 놀랐어요.”
+<div class="reviewCard">★★★★★ “6월 계약 진짜 터졌습니다.”</div>
+<div class="reviewCard">★★★★★ “사업 확장 시점 정확했습니다.”</div>
 </div>
 
-<div class="reviewCard">
-<strong>★★★★★</strong><br>
-“대운 흐름 설명이 진짜 소름… 결제하길 잘했어요.”
-</div>
-
-<div class="reviewCard">
-<strong>★★★★☆</strong><br>
-“지금 선택 고민 중이었는데 방향이 정리됐습니다.”
-</div>
-</div>
-
-<div id="refundPolicy" class="card" style="display:none; font-size:13px;">
-<h4>📌 취소 및 환불 정책</h4>
-<p>
-본 서비스는 디지털 콘텐츠 특성상<br> 
-사주 분석 결과가 제공된 이후에는 환불이 어렵습니다.<br><br> 
-단, 결제 오류 또는 서비스 미제공 등<br> 
-회사의 귀책 사유가 있는 경우에는<br> 
-결제일로부터 7일 이내 환불이 가능합니다.<br>
-</p>
-<p style="margin-top:12px; color:#94a3b8;"> 
-문의: kmatin0035@gmail.com<br><br> 
-© 2026 지금운 | 콘텐츠 서비스<br> 
-본 서비스는 참고용 콘텐츠입니다
-</p>
+<div class="footer">
+상호명: 킴스컴퍼니<br>
+대표자: 김성일<br>
+사업자등록번호: 383-25-01493<br>
+통신판매업신고번호: 2026-광주북구-0121<br>
+고객문의: kmatin0035@gmail.com<br><br>
+<a href="/terms.html">이용약관</a> |
+<a href="/privacy.html">개인정보처리방침</a><br><br>
+※ 본 서비스는 디지털 콘텐츠 상품으로 결제 즉시 제공됩니다.<br>
+콘텐츠 특성상 제공 후 환불이 제한됩니다.
 </div>
 
 </div>
 
 <script src="https://js.tosspayments.com/v1"></script>
 <script>
-
-document.getElementById("todayCount").innerText =
-  Math.floor(Math.random()*120)+80;
-
-const paymentBtn = document.getElementById("paymentBtn");
-const result = document.getElementById("result");
-const payment = document.getElementById("payment");
-const refundPolicy = document.getElementById("refundPolicy");
-const gptResult = document.getElementById("gptResult");
-const scoreBar = document.getElementById("scoreBar");
-const scoreText = document.getElementById("scoreText");
-const scoreSection = document.getElementById("scoreSection");
-const loadingBox = document.getElementById("loadingBox");
-
-const mainLuckTexts = [
-"지금은 멈춤 속에서 기회가 자라는 시기입니다.",
-"과거의 선택이 다시 돌아오는 흐름입니다.",
-"작은 결단이 큰 변화를 만듭니다.",
-"사람을 통해 운이 열리는 시점입니다."
-];
-
-const loveLuckTexts = [
-"연애운이 서서히 살아나고 있습니다.",
-"과거 인연과의 재연결 가능성이 있습니다.",
-"조급함을 내려놓을수록 관계가 깊어집니다.",
-"감정을 숨기지 않는 것이 관건입니다."
-];
-
-document.getElementById("freeBtn").addEventListener("click", () => {
-
-  const birthVal = document.getElementById("birth").value;
-  const timeVal = document.getElementById("time").value;
-  const timeUnknown = document.getElementById("timeUnknown").checked;
-  const genderVal = document.getElementById("gender").value;
-
-  document.getElementById("birthErr").style.display = "none";
-  document.getElementById("timeErr").style.display = "none";
-  document.getElementById("genderErr").style.display = "none";
-
-  if (!birthVal) return document.getElementById("birthErr").style.display="block";
-  if (!timeVal && !timeUnknown) return document.getElementById("timeErr").style.display="block";
-  if (!genderVal) return document.getElementById("genderErr").style.display="block";
-
-  document.getElementById("mainLuck").innerText =
-    mainLuckTexts[Math.floor(Math.random()*mainLuckTexts.length)];
-
-  document.getElementById("loveLuck").innerText =
-    loveLuckTexts[Math.floor(Math.random()*loveLuckTexts.length)];
-
-  result.style.display = "block";
-  paymentBtn.style.display = "block";
-
-  localStorage.setItem("sajuData", JSON.stringify({
-    birth: birthVal,
-    time: timeUnknown ? "모름" : timeVal,
-    gender: genderVal
-  }));
+const paymentBtn=document.getElementById("paymentBtn");
+document.getElementById("freeBtn").addEventListener("click",()=>{
+document.getElementById("result").style.display="block";
+document.getElementById("mainLuck").innerText="현재는 재물 구조 전환기입니다.";
 });
 
-paymentBtn.addEventListener("click", () => {
-  const toss = TossPayments("test_ck_GjLJoQ1aVZ21ybq9bjRJVw6KYe2R");
-  toss.requestPayment("카드", {
-    amount: 2900,
-    orderId: "order_" + Date.now(),
-    orderName: "지금운 프리미엄",
-    customerName: "테스트",
-    successUrl: location.origin + location.pathname + "?payment=success",
-    failUrl: location.origin + location.pathname + "?payment=fail"
-  });
+paymentBtn.addEventListener("click",()=>{
+const toss=TossPayments("test_ck_GjLJoQ1aVZ21ybq9bjRJVw6KYe2R");
+toss.requestPayment("카드",{
+amount:4900,
+orderId:"order_"+Date.now(),
+orderName:"지금운 정밀 분석",
+customerName:"고객",
+successUrl:location.origin+"/success.html",
+failUrl:location.origin
 });
-
-window.addEventListener("load", () => {
-  if (new URLSearchParams(location.search).get("payment") === "success") {
-    result.style.display = "block";
-    payment.style.display = "block";
-    refundPolicy.style.display = "block";
-    fetchPremiumSaju();
-  }
 });
-
-async function fetchPremiumSaju() {
-
-  const saved = JSON.parse(localStorage.getItem("sajuData"));
-  if (!saved) {
-    gptResult.innerHTML = "⚠️ 사주 정보가 없습니다.";
-    return;
-  }
-
-  loadingBox.style.display = "block";
-  scoreSection.style.display = "none";
-  gptResult.innerHTML = "";
-
-  try {
-    const res = await fetch("/api/saju", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(saved)
-    });
-
-    const data = await res.json();
-    loadingBox.style.display = "none";
-
-    const text = data.result || "⚠️ 사주 결과를 불러오지 못했습니다.";
-
-    const scoreMatch = text.match(/지금운 점수\s*[:：]?\s*(\d+)/);
-    const score = scoreMatch ? parseInt(scoreMatch[1]) : Math.floor(Math.random()*41)+60;
-
-    scoreSection.style.display = "block";
-    scoreBar.style.width = score + "%";
-
-    let level = "";
-    if(score <= 40) level="🔴 하락 구간";
-    else if(score <=70) level="🟡 보통 흐름";
-    else if(score <=85) level="🟢 상승 흐름";
-    else level="🔵 강운 구간";
-
-    scoreText.innerText = score + "점 · " + level;
-
-    const sections = text.split(/\n(?=\d+\.)/);
-
-sections.forEach(sec=>{
-  const lines = sec.trim().split("\n");
-  const title = lines[0].trim();
-  const body = lines.slice(1).join("\n").trim();
-
-  const card = document.createElement("div");
-  card.className = "resultCard";
-
-  const h = document.createElement("h4");
-  h.innerText = title;
-
-  const p = document.createElement("p");
-
-  // 🔥 직업운 특별 처리
-  if(title.includes("직업운")){
-
-    let jobContent = body;
-
-    // 만약 GPT가 이유를 안줬을 경우 자동 생성
-    if(!jobContent || jobContent.length < 30){
-      jobContent = `
-1) 상담/코칭 분야  
-- 사람을 이해하는 기운이 강하며 공감 능력이 뛰어납니다.  
-- 오행 흐름상 대인관계 운이 강하게 작용합니다.  
-
-2) 기획·전략 직군  
-- 분석적 사고와 장기 흐름을 읽는 힘이 있습니다.  
-- 대운 흐름상 판단력이 상승 구간에 있습니다.  
-
-3) 금융·투자 분야  
-- 재물 감각이 타고난 구조입니다.  
-- 금(金) 기운이 안정적으로 작용합니다.  
-
-4) 콘텐츠·교육 분야  
-- 표현력과 전달력이 살아있는 사주입니다.  
-- 목(木) 기운이 강해 성장형 직업과 맞습니다.  
-
-5) 자영업·사업  
-- 독립 기운이 강하고 스스로 판을 만드는 운입니다.  
-- 향후 대운에서 사업 확장 기회가 들어옵니다.
-`;
-    }
-
-    p.innerText = jobContent;
-
-  } else {
-    p.innerText = body || "분석 내용 생성 중입니다.";
-  }
-
-  card.appendChild(h);
-  card.appendChild(p);
-  gptResult.appendChild(card);
-});
-
-  } catch (e) {
-    loadingBox.style.display = "none";
-    gptResult.innerHTML = "⚠️ 서버 오류 발생";
-  }
-}
-
 </script>
+
 </body>
 </html>
