@@ -1,15 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>결제 완료</title>
+
+<style>
+
+body{
+margin:0;
+font-family:'Noto Sans KR',sans-serif;
+background:#020617;
+color:white;
+display:flex;
+justify-content:center;
+}
+
+.container{
+width:100%;
+max-width:420px;
+padding:24px;
+}
+
+.card{
+background:#0f172a;
+padding:18px;
+border-radius:16px;
+margin-top:14px;
+border:1px solid rgba(99,102,241,0.3);
+}
+
+.score{
+font-size:28px;
+font-weight:bold;
+color:#facc15;
+}
+
+.shareBox{
+margin-top:25px;
+display:flex;
+gap:10px;
+}
+
+button{
+flex:1;
+padding:14px;
+border-radius:12px;
+border:none;
+font-weight:bold;
+cursor:pointer;
+}
+
+.kakao{
+background:#FEE500;
+color:black;
+}
+
+.imageBtn{
+background:#6366f1;
+color:white;
+}
+
+</style>
+
 </head>
+
 <body>
 
+<div class="container">
+
 <h2>결제 확인 중입니다...</h2>
+
 <div id="result">잠시만 기다려주세요.</div>
 
+<div class="shareBox" style="display:none;" id="shareArea">
+
+<button class="kakao" onclick="shareKakao()">카카오톡 공유</button>
+
+<button class="imageBtn" onclick="downloadImage()">결과 이미지 저장</button>
+
+</div>
+
+</div>
+
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
 <script>
+
+Kakao.init("YOUR_KAKAO_JAVASCRIPT_KEY");
 
 async function start(){
 
@@ -53,10 +131,9 @@ body:JSON.stringify({birth,time,gender})
 
 const sajuData=await saju.json();
 
-document.getElementById("result").innerHTML=
-"<h3>🔮 사주 분석 결과</h3><pre style='white-space:pre-wrap;'>"+
-sajuData.result+
-"</pre>";
+renderResult(sajuData.result);
+
+document.getElementById("shareArea").style.display="flex";
 
 }catch(err){
 
@@ -66,6 +143,67 @@ document.getElementById("result").innerText=
 console.error(err);
 
 }
+
+}
+
+function renderResult(text){
+
+const sections=text.split(/\n\d+\./);
+
+let html="<h2>🔮 사주 정밀 분석</h2>";
+
+sections.forEach(section=>{
+
+if(section.trim().length<20) return;
+
+const lines=section.trim().split("\n");
+
+const title=lines[0];
+const body=lines.slice(1).join("<br>");
+
+html+=`
+<div class="card">
+<h3>${title}</h3>
+<p>${body}</p>
+</div>
+`;
+
+});
+
+document.getElementById("result").innerHTML=html;
+
+}
+
+function shareKakao(){
+
+Kakao.Share.sendDefault({
+objectType:"feed",
+content:{
+title:"🔮 지금운 사주 분석 결과",
+description:"AI가 분석한 나의 2026년 운세 결과를 확인해보세요.",
+imageUrl:"https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png",
+link:{
+mobileWebUrl:location.origin,
+webUrl:location.origin
+}
+}
+});
+
+}
+
+function downloadImage(){
+
+html2canvas(document.querySelector(".container")).then(canvas=>{
+
+const link=document.createElement("a");
+
+link.download="saju_result.png";
+
+link.href=canvas.toDataURL();
+
+link.click();
+
+});
 
 }
 
