@@ -12,12 +12,10 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^4.22.1",
+    "express-rate-limit": "^7.0.0",
     "node-fetch": "^2.6.12",
     "openai": "^4.26.0",
     "uuid": "^9.0.1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs"
 }
