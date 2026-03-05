@@ -66,7 +66,7 @@ color:white;
 
 <body>
 
-<div class="container">
+<div class="container" id="captureArea">
 
 <h2>결제 확인 중입니다...</h2>
 
@@ -88,6 +88,8 @@ color:white;
 <script>
 
 Kakao.init("b93117f37a0e66e258cf0dfd07796271");
+
+let generatedImage=null;
 
 async function start(){
 
@@ -135,6 +137,8 @@ renderResult(sajuData.result);
 
 document.getElementById("shareArea").style.display="flex";
 
+setTimeout(generateImage,1000);
+
 }catch(err){
 
 document.getElementById("result").innerText=
@@ -174,14 +178,22 @@ document.getElementById("result").innerHTML=html;
 
 }
 
+async function generateImage(){
+
+const canvas=await html2canvas(document.querySelector("#captureArea"));
+
+generatedImage=canvas.toDataURL();
+
+}
+
 function shareKakao(){
 
 Kakao.Share.sendDefault({
 objectType:"feed",
 content:{
 title:"🔮 지금운 사주 분석 결과",
-description:"AI가 분석한 나의 2026년 운세 결과를 확인해보세요.",
-imageUrl:"https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png",
+description:"AI가 분석한 나의 2026년 운세 결과",
+imageUrl:generatedImage || "https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png",
 link:{
 mobileWebUrl:location.origin,
 webUrl:location.origin
@@ -193,7 +205,7 @@ webUrl:location.origin
 
 function downloadImage(){
 
-html2canvas(document.querySelector(".container")).then(canvas=>{
+html2canvas(document.querySelector("#captureArea")).then(canvas=>{
 
 const link=document.createElement("a");
 
