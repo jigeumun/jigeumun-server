@@ -7,63 +7,70 @@
 <body>
 
 <h2>결제 확인 중입니다...</h2>
-<div id="result"></div>
+<div id="result">잠시만 기다려주세요.</div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const paymentKey = urlParams.get("paymentKey");
-const orderId = urlParams.get("orderId");
-const amount = urlParams.get("amount");
 
-// 👉 이전 페이지에서 저장한 사주 정보 불러오기
-const birth = localStorage.getItem("birth");
-const time = localStorage.getItem("time");
-const gender = localStorage.getItem("gender");
+async function start(){
 
-if (!paymentKey || !orderId || !amount) {
-  document.getElementById("result").innerText = "잘못된 접근입니다.";
-} else {
+const urlParams=new URLSearchParams(window.location.search);
 
-  // 1️⃣ 결제 검증
-  fetch("/verify-payment", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ paymentKey, orderId, amount })
-  })
-  .then(res => res.json())
-  .then(data => {
+const paymentKey=urlParams.get("paymentKey");
+const orderId=urlParams.get("orderId");
+const amount=urlParams.get("amount");
 
-    if (data.success) {
+const birth=localStorage.getItem("birth");
+const time=localStorage.getItem("time");
+const gender=localStorage.getItem("gender");
 
-      document.getElementById("result").innerHTML =
-        "<h3>결제가 완료되었습니다 ✅</h3><p>사주 분석 중입니다... 잠시만 기다려주세요.</p>";
-
-      // 2️⃣ 사주 분석 호출
-      return fetch("/api/saju", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ birth, time, gender })
-      });
-
-    } else {
-      throw new Error("결제 검증 실패");
-    }
-
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    document.getElementById("result").innerHTML =
-      "<h3>🔮 사주 분석 결과</h3><pre style='white-space: pre-wrap;'>" +
-      data.result +
-      "</pre>";
-
-  })
-  .catch(err => {
-    document.getElementById("result").innerText =
-      "오류 발생: " + err.message;
-  });
+if(!paymentKey||!orderId||!amount){
+document.getElementById("result").innerText="잘못된 접근입니다.";
+return;
 }
+
+try{
+
+const verify=await fetch("/verify-payment",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({paymentKey,orderId,amount})
+});
+
+const verifyData=await verify.json();
+
+if(!verifyData.success){
+throw new Error("결제 검증 실패");
+}
+
+document.getElementById("result").innerHTML=
+"<h3>결제가 완료되었습니다 ✅</h3><p>AI가 사주를 분석하고 있습니다...</p>";
+
+const saju=await fetch("/api/saju",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({birth,time,gender})
+});
+
+const sajuData=await saju.json();
+
+document.getElementById("result").innerHTML=
+"<h3>🔮 사주 분석 결과</h3><pre style='white-space:pre-wrap;'>"+
+sajuData.result+
+"</pre>";
+
+}catch(err){
+
+document.getElementById("result").innerText=
+"현재 분석 요청이 많습니다. 잠시 후 다시 시도해주세요.";
+
+console.error(err);
+
+}
+
+}
+
+start();
+
 </script>
 
 </body>
