@@ -2,46 +2,73 @@ require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
 const bodyParser = require("body-parser");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
+
 app.use(bodyParser.json());
 app.use(express.static("."));
+
+//////////////////////////////////////////////////////
+// 🔒 Rate Limit (봇 방어)
+//////////////////////////////////////////////////////
+
+const limiter = rateLimit({
+windowMs: 60 * 1000,
+max: 30,
+message: {
+error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요."
+}
+});
+
+app.use("/api", limiter);
+
+//////////////////////////////////////////////////////
+// 🔒 중복 결제 방지
+//////////////////////////////////////////////////////
+
+const usedOrders = new Set();
+
+//////////////////////////////////////////////////////
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const TOSS_SECRET_KEY = process.env.TOSS_SECRET_KEY;
 
 if (!TOSS_SECRET_KEY) {
-  console.error("❌ TOSS_SECRET_KEY 환경변수 없음");
+console.error("❌ TOSS_SECRET_KEY 환경변수 없음");
 }
 
 if (!OPENAI_API_KEY) {
-  console.error("❌ OPENAI_API_KEY 환경변수 없음");
+console.error("❌ OPENAI_API_KEY 환경변수 없음");
 }
 
 //////////////////////////////////////////////////////
 // 🔮 고급 사주 분석 API
 //////////////////////////////////////////////////////
+
 app.post("/api/saju", async (req, res) => {
-  const { birth, time, gender } = req.body;
-  console.log("받은 값:", req.body);
 
-  if (!birth || !gender) {
-    return res.status(400).json({ error: "필수 정보 누락" });
-  }
+const { birth, time, gender } = req.body;
 
-  // 🔥 랜덤 분석 스타일 추가 (항상 같은 결과 방지)
-  const randomStyles = [
-    "재물 중심의 현실적 분석을 강화하십시오.",
-    "대운 흐름을 더욱 강조하십시오.",
-    "위험 요소를 명확히 경고하십시오.",
-    "기회 구간을 공격적으로 설명하십시오."
-  ];
+console.log("받은 값:", req.body);
 
-  const randomStyle =
-    randomStyles[Math.floor(Math.random() * randomStyles.length)];
+if (!birth || !gender) {
+return res.status(400).json({ error: "필수 정보 누락" });
+}
 
-  const prompt = `
-  당신은 30년 경력의 최고급 명리학자입니다.
+const randomStyles = [
+"재물 중심의 현실적 분석을 강화하십시오.",
+"대운 흐름을 더욱 강조하십시오.",
+"위험 요소를 명확히 경고하십시오.",
+"기회 구간을 공격적으로 설명하십시오."
+];
+
+const randomStyle =
+randomStyles[Math.floor(Math.random() * randomStyles.length)];
+
+const prompt = `
+
+당신은 30년 경력의 최고급 명리학자입니다.
 이 고객은 실제 결제를 완료한 유료 고객입니다.
 상담 보고서 수준으로 작성하십시오.
 
@@ -58,17 +85,15 @@ ${randomStyle}
 
 ※ 단순 운세 문장 생성 금지.
 ※ 구조 → 근거 → 결과 순서로 전개.
+
 ────────────────────────
 
 ❗ 절대 규칙
 
-- 모든 항목 최소 기준 분량을 반드시 지킬 것 
-- 절대 항목 생략 금지 
-- "가능성", "~일 수 있다", "참고용" 금지 - 단정적 어조 유지 
-- 추상 표현 금지 
-- 최소 2200자 이상 
-- 전문가 보고서 톤 유지 
-- 줄 간격 충분히 유지
+- 모든 항목 최소 기준 분량을 반드시 지킬 것
+- 절대 항목 생략 금지
+- 최소 2200자 이상
+- 전문가 보고서 톤 유지
 
 [입력 정보]
 - 생년월일: ${birth}
@@ -80,8 +105,7 @@ ${randomStyle}
 형식:
 🔮 지금운 점수: 00점
 
-- 점수 산정 근거를 오행 균형과 대운 흐름 기준으로 5줄 이상 설명
-- 현재 재물 흐름의 상승/정체/하락 구조 명확히 설명
+- 점수 산정 근거 설명
 
 ────────────────────────
 
@@ -90,196 +114,173 @@ ${randomStyle}
 - 일간 중심 성향
 - 오행 불균형 여부
 - 현재 대운 위치
-- 인생 구조의 방향성
-
-최소 6줄 이상.
+- 인생 구조 방향
 
 ────────────────────────
 
-3. 초년운 (1~30세)
-
-성향 형성, 환경 영향, 기운 축적 과정 설명.
-최소 5줄 이상.
+3. 초년운
 
 ────────────────────────
 
-4. 중년운 (31~50세)
-
-재물 확장 가능성
-사회적 위치 상승 구조
-인간관계 재편 흐름
-최소 6줄 이상.
+4. 중년운
 
 ────────────────────────
 
-5. 장년운 (51세 이후)
-
-안정성, 자산 축적 방향
-건강 흐름 포함
-최소 5줄 이상.
+5. 장년운
 
 ────────────────────────
 
 6. 음양오행 분석
 
-- 목의 기운: 강/중/약 판단 + 근거 3줄 이상
-- 화의 기운:
-- 토의 기운:
-- 금의 기운:
-- 수의 기운:
-
-각 기운별 보완 전략 포함.
+목 / 화 / 토 / 금 / 수 각각 분석
 
 ────────────────────────
 
 7. 사주에 맞는 직업 5가지
 
-각 항목 형식 엄수:
-
-1) 직업명
-- 오행 구조와의 연결성
-- 성향 적합성
-- 재물 흐름 연결성
-- 현실 적용 전략
-
-(각 직업 최소 4줄 이상, 총 5개 반드시 작성)
-
 ────────────────────────
 
 8. 인간관계 및 배우자 구조
-
-- 배우자 유형
-- 갈등 발생 구조
-- 결혼 적기 흐름
-
-최소 5줄 이상.
 
 ────────────────────────
 
 9. 궁합이 잘 맞는 띠 3가지
 
-각 띠별 3줄 이상 이유 설명.
-
 ────────────────────────
 
 10. 2026년 월별 재물 흐름
-
-1월부터 12월까지:
-
-- 재물 기회 시기
-- 계약/확장 유리한 달
-- 지출/손실 주의 달
-- 행동 전략
-
-각 월 최소 2~3줄 이상.
 
 ────────────────────────
 
 11. 지금 반드시 해야 할 행동 3가지
 
-형식:
-
-1) 행동
-- 구조적 이유
-- 미실행 시 손실 구조
-- 실행 시 기대 결과
-
-(각 행동 최소 4줄 이상)
-
-────────────────────────
-
 보고서 형식 유지.
-절대 항목 생략 금지.
 `;
 
-  try {
-    const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content:
-              "당신은 대한민국 최고 수준의 명리학자이며, 절대 항목을 생략하지 않습니다."
-          },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.8, // 🔥 조금 더 랜덤성 강화
-        max_tokens: 3500
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
+try {
 
-    const result =
-      response.data?.choices?.[0]?.message?.content;
+const response = await axios.post(
+"https://api.openai.com/v1/chat/completions",
+{
+model: "gpt-4o-mini",
+messages: [
+{
+role: "system",
+content:
+"당신은 대한민국 최고 수준의 명리학자이며 절대 항목을 생략하지 않습니다."
+},
+{ role: "user", content: prompt }
+],
+temperature: 0.8,
+max_tokens: 3500
+},
+{
+headers: {
+Authorization: `Bearer ${OPENAI_API_KEY}`,
+"Content-Type": "application/json"
+}
+}
+);
 
-    if (!result) {
-      console.error("❌ GPT 응답 비어있음:", response.data);
-      return res.status(500).json({ error: "GPT 응답 오류" });
-    }
+const result =
+response.data?.choices?.[0]?.message?.content;
 
-    res.json({ result });
+if (!result) {
 
-  } catch (error) {
-    console.error("🔥 OpenAI 에러:", error.response?.data || error.message);
-    res.status(500).json({ error: "사주 분석 실패" });
-  }
+console.error("❌ GPT 응답 비어있음:", response.data);
+
+return res.status(500).json({
+error: "현재 분석 요청이 많습니다. 잠시 후 다시 시도해주세요."
+});
+
+}
+
+res.json({ result });
+
+} catch (error) {
+
+console.error("🔥 OpenAI 에러:", error.response?.data || error.message);
+
+res.status(500).json({
+error: "사주 분석 중 오류가 발생했습니다."
+});
+
+}
+
 });
 
 //////////////////////////////////////////////////////
 // 💳 토스 결제 검증 API
 //////////////////////////////////////////////////////
+
 app.post("/verify-payment", async (req, res) => {
-  const { paymentKey, orderId, amount } = req.body;
 
-  if (!paymentKey || !orderId || !amount) {
-    return res.status(400).json({
-      success: false,
-      message: "결제 검증 필수값 누락"
-    });
-  }
+const { paymentKey, orderId, amount } = req.body;
 
-  try {
-    const amountNumber = Number(amount);
+if (!paymentKey || !orderId || !amount) {
 
-    const response = await axios.post(
-      "https://api.tosspayments.com/v1/payments/confirm",
-      {
-        paymentKey,
-        orderId,
-        amount: amountNumber
-      },
-      {
-        headers: {
-          Authorization:
-            "Basic " +
-            Buffer.from(TOSS_SECRET_KEY + ":").toString("base64"),
-          "Content-Type": "application/json"
-        }
-      }
-    );
+return res.status(400).json({
+success: false,
+message: "결제 검증 필수값 누락"
+});
 
-    console.log("✅ 결제 검증 성공");
-    res.json({ success: true });
+}
 
-  } catch (error) {
-    console.error("🔥 토스 에러:", error.response?.data || error.message);
-    res.status(400).json({
-      success: false,
-      message: error.response?.data || "결제 검증 실패"
-    });
-  }
+if (usedOrders.has(orderId)) {
+
+return res.status(400).json({
+success: false,
+message: "이미 처리된 주문입니다."
+});
+
+}
+
+try {
+
+const amountNumber = Number(amount);
+
+const response = await axios.post(
+"https://api.tosspayments.com/v1/payments/confirm",
+{
+paymentKey,
+orderId,
+amount: amountNumber
+},
+{
+headers: {
+Authorization:
+"Basic " +
+Buffer.from(TOSS_SECRET_KEY + ":").toString("base64"),
+"Content-Type": "application/json"
+}
+}
+);
+
+usedOrders.add(orderId);
+
+console.log("✅ 결제 검증 성공");
+
+res.json({ success: true });
+
+} catch (error) {
+
+console.error("🔥 토스 에러:", error.response?.data || error.message);
+
+res.status(400).json({
+success: false,
+message: "결제 검증 실패"
+});
+
+}
+
 });
 
 //////////////////////////////////////////////////////
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log("🚀 Server running on port " + PORT);
+
+console.log("🚀 Server running on port " + PORT);
+
 });
