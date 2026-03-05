@@ -1,13 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
-const bodyParser = require("body-parser");
 const rateLimit = require("express-rate-limit");
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(express.static("."));
+app.use(express.json());
+app.use(express.static(__dirname));
 
 //////////////////////////////////////////////////////
 // 🔒 Rate Limit (봇 방어)
@@ -67,7 +66,6 @@ const randomStyle =
 randomStyles[Math.floor(Math.random() * randomStyles.length)];
 
 const prompt = `
-
 당신은 30년 경력의 최고급 명리학자입니다.
 이 고객은 실제 결제를 완료한 유료 고객입니다.
 상담 보고서 수준으로 작성하십시오.
@@ -239,7 +237,7 @@ try {
 
 const amountNumber = Number(amount);
 
-const response = await axios.post(
+await axios.post(
 "https://api.tosspayments.com/v1/payments/confirm",
 {
 paymentKey,
