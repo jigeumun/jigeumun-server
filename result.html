@@ -116,87 +116,68 @@ margin-top:10px;
 
 <div class="title">🔮 나의 사주 분석 결과</div>
 
-<!-- 사주 팔자 -->
-
 <div class="card">
-
 <h3>사주 팔자</h3>
-
 <div class="hanjaPillars">
-
 <div id="hanjaYear">-</div>
 <div id="hanjaMonth">-</div>
 <div id="hanjaDay">-</div>
 <div id="hanjaHour">-</div>
-
 </div>
-
 </div>
-
-<!-- 오행 -->
 
 <div class="card">
-
 <h3>오행 균형</h3>
-
 <canvas id="fiveChart"></canvas>
-
 <div class="elementBars" id="elementBars"></div>
-
 </div>
 
-<!-- 월별 운세 -->
-
 <div class="card">
-
 <h3>📅 2026년 월별 운세</h3>
-
 <canvas id="yearChart"></canvas>
-
 </div>
-
-<!-- 대운 -->
 
 <div class="card">
-
 <h3>🌙 대운 흐름</h3>
-
 <div id="luckFlow"></div>
-
 </div>
-
-<!-- GPT 분석 -->
 
 <div id="analysis"></div>
 
-<!-- 친구 궁합 -->
+<div class="card">
+<h3>🔥 AI 인생 총운</h3>
+<div id="lifeFortune"></div>
+</div>
 
 <div class="card">
+<h3>💰 2026 재물 흐름</h3>
+<canvas id="moneyChart"></canvas>
+</div>
 
+<div class="card">
+<h3>🌞 오늘의 운세</h3>
+<div id="todayLuck"></div>
+</div>
+
+<div class="card">
+<h3>💼 AI 직업 추천</h3>
+<div id="jobRecommend"></div>
+</div>
+
+<div class="card">
 <h3>💞 친구와 궁합 보기</h3>
-
-<p style="font-size:13px;color:#94a3b8">
-친구 생년월일을 입력하면 간단한 궁합을 확인할 수 있습니다.
-</p>
 
 <input type="date" id="friendBirth" style="width:100%;padding:10px;border-radius:8px;border:none">
 
-<button class="compatBtn" onclick="checkCompatibility()">
-궁합 확인하기
-</button>
+<button class="compatBtn" onclick="checkCompatibility()">궁합 확인하기</button>
 
-<div id="compatibilityResult" style="margin-top:10px;font-size:14px"></div>
+<div id="compatibilityResult"></div>
 
 </div>
 
-<!-- 공유 -->
-
 <div class="shareBox">
-
 <button class="kakao" onclick="shareKakao()">카카오 공유</button>
-
 <button class="imageBtn" onclick="downloadImage()">이미지 저장</button>
-
 </div>
 
 </div>
@@ -208,205 +189,101 @@ margin-top:10px;
 
 Kakao.init("b93117f37a0e66e258cf0dfd07796271")
 
-//////////////////////////////////////////////////////
-// 데이터 불러오기
-//////////////////////////////////////////////////////
-
 const sajuText = localStorage.getItem("sajuResult")
 const elementsJSON = localStorage.getItem("elements")
 const fortuneJSON = localStorage.getItem("fortune")
 const daewoonJSON = localStorage.getItem("daewoon")
 const hanjaJSON = localStorage.getItem("hanja")
 
-//////////////////////////////////////////////////////
-// 한자 사주
-//////////////////////////////////////////////////////
+//////////////////////////////////////////////////
+AI 인생 총운
+//////////////////////////////////////////////////
 
-if(hanjaJSON){
+const lifeFortuneList=[
 
-const hanja=JSON.parse(hanjaJSON)
+"젊은 시기보다 중년 이후 운이 강해지는 사주입니다.",
 
-document.getElementById("hanjaYear").innerText=hanja.year||"-"
-document.getElementById("hanjaMonth").innerText=hanja.month||"-"
-document.getElementById("hanjaDay").innerText=hanja.day||"-"
-document.getElementById("hanjaHour").innerText=hanja.hour||"-"
+"재물과 인간관계에서 균형이 중요한 인생 흐름입니다.",
 
-}
+"초반 고생 후 안정되는 인생 구조입니다.",
 
-//////////////////////////////////////////////////////
-// GPT 분석
-//////////////////////////////////////////////////////
+"변화 속에서 기회를 만드는 운입니다.",
 
-function renderResult(text){
+"성공은 꾸준함에서 오는 사주입니다."
 
-const sections=text.split(/\n\d+\./)
-
-let html="<div class='card'><h3>🔮 사주 정밀 분석</h3>"
-
-sections.forEach(section=>{
-
-if(section.trim().length<10) return
-
-const lines=section.trim().split("\n")
-
-const title=lines[0]
-const body=lines.slice(1).join("<br>")
-
-html+=`
-
-<div style="margin-top:15px">
-
-<b>${title}</b><br>
-
-${body}
-
-</div>
-
-`
-
-})
-
-html+="</div>"
-
-document.getElementById("analysis").innerHTML=html
-
-}
-
-if(sajuText) renderResult(sajuText)
-
-//////////////////////////////////////////////////////
-// 오행 그래프
-//////////////////////////////////////////////////////
-
-if(elementsJSON){
-
-const elements=JSON.parse(elementsJSON)
-
-const ctx=document.getElementById("fiveChart")
-
-new Chart(ctx,{
-
-type:"radar",
-
-data:{
-labels:["목","화","토","금","수"],
-datasets:[{
-label:"오행",
-data:[
-elements.wood||0,
-elements.fire||0,
-elements.earth||0,
-elements.metal||0,
-elements.water||0
-],
-backgroundColor:"rgba(250,204,21,0.2)",
-borderColor:"#facc15"
-}]
-}
-
-})
-
-let html=""
-
-html+=createBar("목",elements.wood,"wood")
-html+=createBar("화",elements.fire,"fire")
-html+=createBar("토",elements.earth,"earth")
-html+=createBar("금",elements.metal,"metal")
-html+=createBar("수",elements.water,"water")
-
-document.getElementById("elementBars").innerHTML=html
-
-}
-
-function createBar(name,value,cls){
-
-if(!value) value=0
-
-const width=value*25
-
-return`
-
-<div class="elementRow">
-
-${name}
-
-<div class="bar ${cls}" style="width:${width}px"></div>
-
-</div>
-
-`
-
-}
-
-//////////////////////////////////////////////////////
-// 월별 운세
-//////////////////////////////////////////////////////
-
-if(fortuneJSON){
-
-const fortune=JSON.parse(fortuneJSON)
-
-const months=[
-"1월","2월","3월","4월","5월","6월",
-"7월","8월","9월","10월","11월","12월"
 ]
 
-const ctx2=document.getElementById("yearChart")
+document.getElementById("lifeFortune").innerText=
+lifeFortuneList[Math.floor(Math.random()*lifeFortuneList.length)]
 
-new Chart(ctx2,{
+//////////////////////////////////////////////////
+재물 그래프
+//////////////////////////////////////////////////
+
+const moneyData=[
+
+Math.floor(Math.random()*50)+40,
+Math.floor(Math.random()*50)+40,
+Math.floor(Math.random()*50)+40,
+Math.floor(Math.random()*50)+40,
+Math.floor(Math.random()*50)+40,
+Math.floor(Math.random()*50)+40
+
+]
+
+new Chart(document.getElementById("moneyChart"),{
 
 type:"line",
 
 data:{
-labels:months,
+labels:["1월","3월","5월","7월","9월","11월"],
 datasets:[{
-label:"2026 운세",
-data:fortune,
-borderColor:"#facc15",
-backgroundColor:"rgba(250,204,21,0.2)",
-tension:0.3
+label:"재물 흐름",
+data:moneyData,
+borderColor:"#22c55e",
+backgroundColor:"rgba(34,197,94,0.2)"
 }]
 }
 
 })
 
-}
+//////////////////////////////////////////////////
+오늘의 운세
+//////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////
-// 대운
-//////////////////////////////////////////////////////
+const todayLuckList=[
 
-if(daewoonJSON){
+"오늘은 새로운 기회를 발견할 수 있는 날입니다.",
+"오늘은 조심스러운 판단이 필요한 하루입니다.",
+"인연과 만남에서 좋은 흐름이 들어옵니다.",
+"금전과 관련된 작은 기회가 생길 수 있습니다."
 
-const daewoon=JSON.parse(daewoonJSON)
+]
 
-let html=""
+document.getElementById("todayLuck").innerText=
+todayLuckList[Math.floor(Math.random()*todayLuckList.length)]
 
-daewoon.forEach(d=>{
+//////////////////////////////////////////////////
+직업 추천
+//////////////////////////////////////////////////
 
-html+=`
+const jobList=[
 
-<div class="daewoonCard">
+"사업가 / 창업",
+"기획자 / 전략가",
+"금융 / 투자 분야",
+"교육 / 컨설팅",
+"마케팅 / 영업",
+"프리랜서 / 창작 활동"
 
-${d.ageStart}세 ~ ${d.ageEnd}세
+]
 
-<br>
+document.getElementById("jobRecommend").innerText=
+jobList[Math.floor(Math.random()*jobList.length)]
 
-<strong>${d.hanja}</strong>
-
-</div>
-
-`
-
-})
-
-document.getElementById("luckFlow").innerHTML=html
-
-}
-
-//////////////////////////////////////////////////////
-// 친구 궁합
-//////////////////////////////////////////////////////
+//////////////////////////////////////////////////
+궁합
+//////////////////////////////////////////////////
 
 function checkCompatibility(){
 
@@ -420,10 +297,9 @@ return
 const results=[
 
 "🌟 서로 보완되는 궁합입니다.",
-"🔥 성향 차이가 있지만 서로 자극이 되는 관계입니다.",
-"💰 재물이나 일에서 협력하면 좋은 궁합입니다.",
-"🌙 감정적으로 안정감을 줄 수 있는 관계입니다.",
-"⚡ 경쟁심이 생길 수 있는 궁합입니다."
+"🔥 성향 차이가 있지만 서로 자극이 됩니다.",
+"💰 재물 협력에 좋은 궁합입니다.",
+"🌙 정서적으로 안정감을 주는 관계입니다."
 
 ]
 
@@ -433,29 +309,26 @@ document.getElementById("compatibilityResult").innerText=results[random]
 
 }
 
-//////////////////////////////////////////////////////
-// 이미지 저장
-//////////////////////////////////////////////////////
+//////////////////////////////////////////////////
+이미지 저장
+//////////////////////////////////////////////////
 
 function downloadImage(){
 
 html2canvas(document.querySelector("#captureArea")).then(canvas=>{
 
 const link=document.createElement("a")
-
 link.download="saju_result.png"
-
 link.href=canvas.toDataURL()
-
 link.click()
 
 })
 
 }
 
-//////////////////////////////////////////////////////
-// 카카오 공유
-//////////////////////////////////////////////////////
+//////////////////////////////////////////////////
+카카오 공유
+//////////////////////////////////////////////////
 
 function shareKakao(){
 
