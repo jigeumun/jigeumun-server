@@ -1,32 +1,64 @@
 body{
 
-background:#f4efe6;
+margin:0;
 
-font-family:"궁서","Nanum Myeongjo",serif;
+background-color:#0b1120;
 
-color:#2c2c2c;
+background-image:
+radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+
+background-size:40px 40px;
+
+font-family:
+"Nanum Myeongjo",
+"Batang",
+"궁서",
+serif;
+
+color:white;
+
+display:flex;
+
+justify-content:center;
 
 }
 
 .container{
 
-max-width:900px;
+width:100%;
+max-width:420px;
 
-margin:auto;
-
-padding:40px;
-
-background:white;
-
-border:3px solid #b08d57;
+padding:24px;
 
 }
 
-h1{
+.title{
 
 text-align:center;
 
-font-size:32px;
+font-size:28px;
+
+letter-spacing:2px;
+
+margin-bottom:20px;
+
+}
+
+.card{
+
+background:rgba(15,23,42,0.95);
+
+border-radius:16px;
+
+padding:18px;
+
+margin-top:14px;
+
+border:1px solid rgba(255,255,255,0.1);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,0.6);
 
 }
 
@@ -36,16 +68,106 @@ display:flex;
 
 justify-content:space-between;
 
-font-size:28px;
+font-size:22px;
 
-margin:40px 0;
+margin-top:10px;
 
 }
 
-.analysis{
+.pillar{
 
-line-height:1.8;
+text-align:center;
 
-font-size:18px;
+padding:10px;
+
+background:rgba(255,255,255,0.03);
+
+border-radius:10px;
+
+}
+
+.pillar strong{
+
+font-size:26px;
+
+color:#facc15;
+
+}
+
+canvas{
+
+margin-top:10px;
+
+}
+
+.shareBox{
+
+display:flex;
+
+gap:10px;
+
+margin-top:25px;
+
+}
+
+button{
+
+flex:1;
+
+padding:14px;
+
+border:none;
+
+border-radius:12px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+font-size:14px;
+
+transition:0.2s;
+
+}
+
+button:hover{
+
+transform:scale(1.03);
+
+}
+
+.kakao{
+
+background:#FEE500;
+
+color:black;
+
+}
+
+.imageBtn{
+
+background:#6366f1;
+
+color:white;
+
+}
+
+#analysis{
+
+margin-top:15px;
+
+}
+
+#analysis b{
+
+color:#facc15;
+
+}
+
+#luckFlow div{
+
+padding:8px;
+
+border-bottom:1px solid rgba(255,255,255,0.05);
 
 }
