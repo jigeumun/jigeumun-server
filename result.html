@@ -3,7 +3,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <title>나의 사주 분석 결과</title>
 
 <link rel="stylesheet" href="style.css">
@@ -13,88 +12,68 @@
 <style>
 
 body{
-
 margin:0;
 background:#020617;
 color:white;
 font-family:'Noto Sans KR',sans-serif;
 display:flex;
 justify-content:center;
-
 }
 
 .container{
-
 width:100%;
 max-width:420px;
 padding:24px;
-
 }
 
 .title{
-
 text-align:center;
 font-size:26px;
 margin-bottom:20px;
-
 }
 
 .card{
-
 background:#0f172a;
 border-radius:16px;
 padding:18px;
 margin-top:14px;
 border:1px solid rgba(99,102,241,0.3);
-
 }
 
 .pillars{
-
 display:flex;
 justify-content:space-between;
 font-size:22px;
 margin-top:10px;
-
 }
 
 .pillar{
-
 text-align:center;
-
 }
 
 .shareBox{
-
 display:flex;
 gap:10px;
 margin-top:25px;
-
 }
 
 button{
-
 flex:1;
 padding:14px;
 border:none;
 border-radius:12px;
 font-weight:bold;
 cursor:pointer;
-
 }
 
 .kakao{
-
 background:#FEE500;
 color:black;
-
 }
 
 .imageBtn{
-
 background:#6366f1;
 color:white;
-
 }
 
 </style>
@@ -114,31 +93,23 @@ color:white;
 <div class="pillars">
 
 <div class="pillar">
-
 년주<br>
 <strong id="year"></strong>
-
 </div>
 
 <div class="pillar">
-
 월주<br>
 <strong id="month"></strong>
-
 </div>
 
 <div class="pillar">
-
 일주<br>
 <strong id="day"></strong>
-
 </div>
 
 <div class="pillar">
-
 시주<br>
 <strong id="hour"></strong>
-
 </div>
 
 </div>
@@ -146,27 +117,18 @@ color:white;
 </div>
 
 <div class="card">
-
 <h3>오행 균형</h3>
-
 <canvas id="fiveChart"></canvas>
+</div>
 
 <div class="card">
-
 <h3>📅 2026년 월별 운세 흐름</h3>
-
 <canvas id="yearChart"></canvas>
-
 </div>
 
 <div class="card">
-
 <h3>🌙 대운 흐름</h3>
-
 <div id="luckFlow"></div>
-
-</div>
-
 </div>
 
 <div id="analysis"></div>
@@ -189,17 +151,25 @@ color:white;
 Kakao.init("b93117f37a0e66e258cf0dfd07796271");
 
 //////////////////////////////////////////////////////
+// 로컬 데이터 불러오기
+//////////////////////////////////////////////////////
 
 const sajuText=localStorage.getItem("sajuResult");
-
 const sajuData=JSON.parse(localStorage.getItem("sajuData"));
+const elementsJSON=localStorage.getItem("elements");
 
 //////////////////////////////////////////////////////
+// 사주 표시
+//////////////////////////////////////////////////////
+
+if(sajuData){
 
 document.getElementById("year").innerText=sajuData.year;
 document.getElementById("month").innerText=sajuData.month;
 document.getElementById("day").innerText=sajuData.day;
 document.getElementById("hour").innerText=sajuData.hour;
+
+}
 
 //////////////////////////////////////////////////////
 // GPT 결과 표시
@@ -235,13 +205,11 @@ document.getElementById("analysis").innerHTML=html;
 
 }
 
-renderResult(sajuText);
+if(sajuText) renderResult(sajuText);
 
 //////////////////////////////////////////////////////
 // 오행 그래프
 //////////////////////////////////////////////////////
-
-const elementsJSON=localStorage.getItem("elements");
 
 if(elementsJSON){
 
@@ -270,6 +238,71 @@ elements["수"]
 });
 
 }
+
+//////////////////////////////////////////////////////
+// 2026 월별 운세 그래프
+//////////////////////////////////////////////////////
+
+const months=[
+"1월","2월","3월","4월","5월","6월",
+"7월","8월","9월","10월","11월","12월"
+];
+
+const fortune=[];
+
+for(let i=0;i<12;i++){
+
+fortune.push(Math.floor(Math.random()*40)+60);
+
+}
+
+const ctx2=document.getElementById("yearChart");
+
+if(ctx2){
+
+new Chart(ctx2,{
+
+type:"line",
+
+data:{
+labels:months,
+datasets:[{
+label:"2026 운세 흐름",
+data:fortune,
+borderColor:"#facc15",
+backgroundColor:"rgba(250,204,21,0.2)"
+}]
+}
+
+});
+
+}
+
+//////////////////////////////////////////////////////
+// 대운 흐름
+//////////////////////////////////////////////////////
+
+function renderLuck(){
+
+const ages=[20,30,40,50,60];
+
+let html="";
+
+ages.forEach(age=>{
+
+html+=`
+<div style="margin-top:10px">
+${age}세 ~ ${age+10}세
+</div>
+`;
+
+});
+
+document.getElementById("luckFlow").innerHTML=html;
+
+}
+
+renderLuck();
 
 //////////////////////////////////////////////////////
 // 이미지 저장
@@ -302,18 +335,13 @@ Kakao.Share.sendDefault({
 objectType:"feed",
 
 content:{
-
 title:"🔮 AI 사주 분석 결과",
-
 description:"나의 사주 분석 결과 확인하기",
-
 imageUrl:"https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png",
-
 link:{
 mobileWebUrl:location.origin,
 webUrl:location.origin
 }
-
 }
 
 });
