@@ -2,11 +2,11 @@ body{
 
 margin:0;
 
-background-color:#0b1120;
+background-color:#0f0c05;
 
 background-image:
-radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
 
 background-size:40px 40px;
 
@@ -16,7 +16,7 @@ font-family:
 "궁서",
 serif;
 
-color:white;
+color:#f3f4f6;
 
 display:flex;
 
@@ -37,28 +37,42 @@ padding:24px;
 
 text-align:center;
 
-font-size:28px;
+font-size:30px;
 
-letter-spacing:2px;
+letter-spacing:3px;
 
-margin-bottom:20px;
+margin-bottom:25px;
+
+color:#facc15;
 
 }
 
 .card{
 
-background:rgba(15,23,42,0.95);
+background:rgba(20,18,12,0.95);
 
-border-radius:16px;
+border-radius:18px;
 
-padding:18px;
+padding:20px;
 
-margin-top:14px;
+margin-top:18px;
 
-border:1px solid rgba(255,255,255,0.1);
+border:1px solid rgba(250,204,21,0.15);
 
 box-shadow:
-0 10px 30px rgba(0,0,0,0.6);
+0 15px 40px rgba(0,0,0,0.6);
+
+}
+
+.card h3{
+
+margin-top:0;
+
+color:#facc15;
+
+font-size:18px;
+
+letter-spacing:1px;
 
 }
 
@@ -70,7 +84,7 @@ justify-content:space-between;
 
 font-size:22px;
 
-margin-top:10px;
+margin-top:12px;
 
 }
 
@@ -78,25 +92,35 @@ margin-top:10px;
 
 text-align:center;
 
-padding:10px;
+padding:12px;
 
-background:rgba(255,255,255,0.03);
+background:rgba(255,255,255,0.04);
 
-border-radius:10px;
+border-radius:12px;
+
+flex:1;
+
+margin:0 4px;
 
 }
 
 .pillar strong{
 
-font-size:26px;
+display:block;
+
+margin-top:4px;
+
+font-size:28px;
 
 color:#facc15;
+
+letter-spacing:2px;
 
 }
 
 canvas{
 
-margin-top:10px;
+margin-top:14px;
 
 }
 
@@ -106,7 +130,7 @@ display:flex;
 
 gap:10px;
 
-margin-top:25px;
+margin-top:28px;
 
 }
 
@@ -126,13 +150,13 @@ cursor:pointer;
 
 font-size:14px;
 
-transition:0.2s;
+transition:0.25s;
 
 }
 
 button:hover{
 
-transform:scale(1.03);
+transform:scale(1.05);
 
 }
 
@@ -154,6 +178,12 @@ color:white;
 
 #analysis{
 
+margin-top:18px;
+
+}
+
+#analysis .card{
+
 margin-top:15px;
 
 }
@@ -166,8 +196,40 @@ color:#facc15;
 
 #luckFlow div{
 
-padding:8px;
+padding:10px;
 
-border-bottom:1px solid rgba(255,255,255,0.05);
+border-bottom:1px solid rgba(255,255,255,0.08);
+
+font-size:15px;
+
+}
+
+#luckFlow strong{
+
+font-size:18px;
+
+color:#facc15;
+
+}
+
+@media (max-width:480px){
+
+.container{
+
+padding:18px;
+
+}
+
+.title{
+
+font-size:24px;
+
+}
+
+.pillar strong{
+
+font-size:24px;
+
+}
 
 }
