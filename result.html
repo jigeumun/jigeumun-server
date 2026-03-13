@@ -87,9 +87,12 @@ Kakao.init("b93117f37a0e66e258cf0dfd07796271");
 // 로컬 데이터 불러오기
 //////////////////////////////////////////////////////
 
-const sajuText=localStorage.getItem("sajuResult");
-const sajuData=JSON.parse(localStorage.getItem("sajuData"));
-const elementsJSON=localStorage.getItem("elements");
+const sajuText = localStorage.getItem("sajuResult");
+const sajuData = JSON.parse(localStorage.getItem("sajuData"));
+const elementsJSON = localStorage.getItem("elements");
+const fortuneJSON = localStorage.getItem("fortune");
+const daewoonJSON = localStorage.getItem("daewoon");
+const hanjaJSON = localStorage.getItem("hanja");
 
 //////////////////////////////////////////////////////
 // 사주 표시
@@ -157,14 +160,16 @@ type:"radar",
 data:{
 labels:["목","화","토","금","수"],
 datasets:[{
-label:"오행",
+label:"오행 균형",
 data:[
-elements["목"],
-elements["화"],
-elements["토"],
-elements["금"],
-elements["수"]
-]
+elements.wood || 0,
+elements.fire || 0,
+elements.earth || 0,
+elements.metal || 0,
+elements.water || 0
+],
+backgroundColor:"rgba(99,102,241,0.2)",
+borderColor:"#6366f1"
 }]
 }
 
@@ -173,25 +178,19 @@ elements["수"]
 }
 
 //////////////////////////////////////////////////////
-// 2026 월별 운세 그래프
+// 월별 운세 그래프
 //////////////////////////////////////////////////////
+
+if(fortuneJSON){
+
+const fortune=JSON.parse(fortuneJSON);
 
 const months=[
 "1월","2월","3월","4월","5월","6월",
 "7월","8월","9월","10월","11월","12월"
 ];
 
-const fortune=[];
-
-for(let i=0;i<12;i++){
-
-fortune.push(Math.floor(Math.random()*40)+60);
-
-}
-
 const ctx2=document.getElementById("yearChart");
-
-if(ctx2){
 
 new Chart(ctx2,{
 
@@ -203,7 +202,8 @@ datasets:[{
 label:"2026 운세 흐름",
 data:fortune,
 borderColor:"#facc15",
-backgroundColor:"rgba(250,204,21,0.2)"
+backgroundColor:"rgba(250,204,21,0.2)",
+tension:0.3
 }]
 }
 
@@ -217,34 +217,29 @@ backgroundColor:"rgba(250,204,21,0.2)"
 
 function renderLuck(){
 
-const lucks=[
-"갑인 대운",
-"을묘 대운",
-"병진 대운",
-"정사 대운",
-"무오 대운"
-]
+if(!daewoonJSON) return;
 
-let html=""
+const daewoon=JSON.parse(daewoonJSON);
 
-lucks.forEach((luck,i)=>{
+let html="";
 
-const start=20+(i*10)
-const end=start+10
+daewoon.forEach(d=>{
 
 html+=`
 
-<div style="margin-top:10px">
-${start}세 ~ ${end}세
+<div style="margin-top:12px">
+
+${d.ageStart}세 ~ ${d.ageEnd}세
 <br>
-<strong>${luck}</strong>
+<strong>${d.ganji}</strong>
+
 </div>
 
-`
+`;
 
-})
+});
 
-document.getElementById("luckFlow").innerHTML=html
+document.getElementById("luckFlow").innerHTML=html;
 
 }
 
