@@ -13,6 +13,32 @@
 
 <style>
 
+body{
+background:#020617;
+color:white;
+font-family:'Nanum Myeongjo',serif;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:420px;
+margin:auto;
+}
+
+.title{
+font-size:24px;
+text-align:center;
+margin-bottom:20px;
+}
+
+.card{
+background:#0f172a;
+padding:18px;
+border-radius:14px;
+margin-bottom:18px;
+}
+
 .hanjaPillars{
 display:flex;
 justify-content:space-between;
@@ -29,11 +55,13 @@ margin-top:10px;
 
 .elementRow{
 margin-top:6px;
+font-size:14px;
 }
 
 .bar{
 height:10px;
 border-radius:6px;
+margin-top:4px;
 }
 
 .wood{background:#22c55e}
@@ -49,6 +77,28 @@ border-radius:10px;
 background:rgba(255,255,255,0.04);
 }
 
+.shareBox{
+margin-top:20px;
+text-align:center;
+}
+
+button{
+padding:12px 16px;
+border:none;
+border-radius:8px;
+margin:5px;
+cursor:pointer;
+}
+
+.kakao{
+background:#FEE500;
+}
+
+.imageBtn{
+background:#6366f1;
+color:white;
+}
+
 </style>
 
 </head>
@@ -59,7 +109,7 @@ background:rgba(255,255,255,0.04);
 
 <div class="title">🔮 나의 사주 분석 결과</div>
 
-<!-- 한자 사주 -->
+<!-- 사주 팔자 -->
 
 <div class="card">
 
@@ -67,16 +117,16 @@ background:rgba(255,255,255,0.04);
 
 <div class="hanjaPillars">
 
-<div id="hanjaYear"></div>
-<div id="hanjaMonth"></div>
-<div id="hanjaDay"></div>
-<div id="hanjaHour"></div>
+<div id="hanjaYear">-</div>
+<div id="hanjaMonth">-</div>
+<div id="hanjaDay">-</div>
+<div id="hanjaHour">-</div>
 
 </div>
 
 </div>
 
-<!-- 오행 그래프 -->
+<!-- 오행 -->
 
 <div class="card">
 
@@ -88,7 +138,7 @@ background:rgba(255,255,255,0.04);
 
 </div>
 
-<!-- 월별 운세 -->
+<!-- 월별 -->
 
 <div class="card">
 
@@ -127,7 +177,7 @@ background:rgba(255,255,255,0.04);
 
 <script>
 
-Kakao.init("b93117f37a0e66e258cf0dfd07796271");
+Kakao.init("b93117f37a0e66e258cf0dfd07796271")
 
 //////////////////////////////////////////////////////
 // 데이터 불러오기
@@ -140,22 +190,22 @@ const daewoonJSON = localStorage.getItem("daewoon")
 const hanjaJSON = localStorage.getItem("hanja")
 
 //////////////////////////////////////////////////////
-// 한자 사주 표시
+// 한자 사주
 //////////////////////////////////////////////////////
 
 if(hanjaJSON){
 
 const hanja=JSON.parse(hanjaJSON)
 
-document.getElementById("hanjaYear").innerText=hanja.year
-document.getElementById("hanjaMonth").innerText=hanja.month
-document.getElementById("hanjaDay").innerText=hanja.day
-document.getElementById("hanjaHour").innerText=hanja.hour
+document.getElementById("hanjaYear").innerText=hanja.year || "-"
+document.getElementById("hanjaMonth").innerText=hanja.month || "-"
+document.getElementById("hanjaDay").innerText=hanja.day || "-"
+document.getElementById("hanjaHour").innerText=hanja.hour || "-"
 
 }
 
 //////////////////////////////////////////////////////
-// GPT 분석 표시
+// GPT 분석
 //////////////////////////////////////////////////////
 
 function renderResult(text){
@@ -166,7 +216,7 @@ let html="<div class='card'><h3>🔮 사주 정밀 분석</h3>"
 
 sections.forEach(section=>{
 
-if(section.trim().length<20) return
+if(section.trim().length<10) return
 
 const lines=section.trim().split("\n")
 
@@ -174,10 +224,15 @@ const title=lines[0]
 const body=lines.slice(1).join("<br>")
 
 html+=`
+
 <div style="margin-top:15px">
+
 <b>${title}</b><br>
+
 ${body}
+
 </div>
+
 `
 
 })
@@ -223,7 +278,7 @@ borderColor:"#facc15"
 })
 
 //////////////////////////////////////////////////////
-// 오행 바 그래프
+// 오행 바
 //////////////////////////////////////////////////////
 
 let html=""
@@ -240,7 +295,9 @@ document.getElementById("elementBars").innerHTML=html
 
 function createBar(name,value,cls){
 
-const width=value*20
+if(!value) value=0
+
+const width=value*25
 
 return`
 
@@ -257,7 +314,7 @@ ${name}
 }
 
 //////////////////////////////////////////////////////
-// 월별 운세 그래프
+// 월별 운세
 //////////////////////////////////////////////////////
 
 if(fortuneJSON){
@@ -265,8 +322,10 @@ if(fortuneJSON){
 const fortune=JSON.parse(fortuneJSON)
 
 const months=[
+
 "1월","2월","3월","4월","5월","6월",
 "7월","8월","9월","10월","11월","12월"
+
 ]
 
 const ctx2=document.getElementById("yearChart")
@@ -291,7 +350,7 @@ tension:0.3
 }
 
 //////////////////////////////////////////////////////
-// 대운 흐름
+// 대운
 //////////////////////////////////////////////////////
 
 if(daewoonJSON){
