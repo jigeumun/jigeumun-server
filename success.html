@@ -170,13 +170,33 @@ day:sajuData.pillars.day,
 hour:sajuData.pillars.hour
 }));
 
+// 오행 저장 (그래프용)
+if(sajuData.elements){
 localStorage.setItem("elements", JSON.stringify(sajuData.elements));
+}
+
+// 한자 저장
+if(sajuData.hanja){
+localStorage.setItem("hanja", JSON.stringify(sajuData.hanja));
+}
+
+// 대운 저장
+if(sajuData.daewoon){
+localStorage.setItem("daewoon", JSON.stringify(sajuData.daewoon));
+}
+
+// 월별 운세 저장
+if(sajuData.monthlyFortune){
+localStorage.setItem("fortune", JSON.stringify(sajuData.monthlyFortune));
+}
 
 //////////////////////////////////////////////////////
 
 renderPillars(sajuData.pillars);
 
+if(sajuData.elements){
 drawChart(sajuData.elements);
+}
 
 renderResult(sajuData.result);
 
