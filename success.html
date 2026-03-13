@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <title>결제 완료</title>
 
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 
 body{
@@ -35,6 +39,17 @@ font-weight:bold;
 color:#facc15;
 }
 
+.pillars{
+display:flex;
+justify-content:space-between;
+margin-top:15px;
+font-size:20px;
+}
+
+.pillar{
+text-align:center;
+}
+
 .shareBox{
 margin-top:25px;
 display:flex;
@@ -60,6 +75,10 @@ background:#6366f1;
 color:white;
 }
 
+canvas{
+margin-top:20px;
+}
+
 </style>
 
 </head>
@@ -71,6 +90,10 @@ color:white;
 <h2>결제 확인 중입니다...</h2>
 
 <div id="result">잠시만 기다려주세요.</div>
+
+<div id="sajuArea"></div>
+
+<canvas id="fiveChart"></canvas>
 
 <div class="shareBox" style="display:none;" id="shareArea">
 
@@ -84,6 +107,7 @@ color:white;
 
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="chart.js"></script>
 
 <script>
 
@@ -133,18 +157,24 @@ body:JSON.stringify({birth,time,gender})
 
 const sajuData=await saju.json();
 
-/* 🔽 여기 추가된 코드 */
+//////////////////////////////////////////////////////
+// 🔮 사주 데이터 저장
+//////////////////////////////////////////////////////
 
 localStorage.setItem("sajuResult", sajuData.result);
 
 localStorage.setItem("sajuData", JSON.stringify({
-year:"-",
-month:"-",
-day:"-",
-hour:"-"
+year:sajuData.pillars.year,
+month:sajuData.pillars.month,
+day:sajuData.pillars.day,
+hour:sajuData.pillars.hour
 }));
 
-/* 🔼 여기까지 */
+//////////////////////////////////////////////////////
+
+renderPillars(sajuData.pillars);
+
+drawChart(sajuData.elements);
 
 renderResult(sajuData.result);
 
@@ -152,13 +182,9 @@ document.getElementById("shareArea").style.display="flex";
 
 setTimeout(generateImage,1000);
 
-/* 🔽 3초 후 결과 페이지 이동 */
-
 setTimeout(()=>{
 location.href="/result.html";
 },3000);
-
-/* 🔼 */
 
 }catch(err){
 
@@ -170,6 +196,54 @@ console.error(err);
 }
 
 }
+
+//////////////////////////////////////////////////////
+// 🔮 사주 표시
+//////////////////////////////////////////////////////
+
+function renderPillars(pillars){
+
+const html=`
+
+<div class="card">
+
+<h3>사주 팔자</h3>
+
+<div class="pillars">
+
+<div class="pillar">
+년주<br>
+<strong>${pillars.year}</strong>
+</div>
+
+<div class="pillar">
+월주<br>
+<strong>${pillars.month}</strong>
+</div>
+
+<div class="pillar">
+일주<br>
+<strong>${pillars.day}</strong>
+</div>
+
+<div class="pillar">
+시주<br>
+<strong>${pillars.hour}</strong>
+</div>
+
+</div>
+
+</div>
+
+`;
+
+document.getElementById("sajuArea").innerHTML=html;
+
+}
+
+//////////////////////////////////////////////////////
+// 🔮 GPT 결과 출력
+//////////////////////////////////////////////////////
 
 function renderResult(text){
 
@@ -199,6 +273,10 @@ document.getElementById("result").innerHTML=html;
 
 }
 
+//////////////////////////////////////////////////////
+// 이미지 생성
+//////////////////////////////////////////////////////
+
 async function generateImage(){
 
 const canvas=await html2canvas(document.querySelector("#captureArea"));
@@ -206,6 +284,10 @@ const canvas=await html2canvas(document.querySelector("#captureArea"));
 generatedImage=canvas.toDataURL();
 
 }
+
+//////////////////////////////////////////////////////
+// 카카오 공유
+//////////////////////////////////////////////////////
 
 function shareKakao(){
 
@@ -223,6 +305,10 @@ webUrl:location.origin
 });
 
 }
+
+//////////////////////////////////////////////////////
+// 이미지 다운로드
+//////////////////////////////////////////////////////
 
 function downloadImage(){
 
