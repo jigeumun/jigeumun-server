@@ -3,94 +3,98 @@
 <head>
 
 <meta charset="UTF-8">
-<title>지금운 사주 분석 결과</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+<title>나의 사주 분석 결과</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
 body{
+
 margin:0;
-font-family:'Nanum Myeongjo', serif;
-background-color:#0b1320;
-background-image:url("https://www.transparenttextures.com/patterns/rice-paper.png");
+background:#020617;
 color:white;
+font-family:'Noto Sans KR',sans-serif;
+display:flex;
+justify-content:center;
+
 }
 
 .container{
-max-width:900px;
-margin:auto;
-padding:40px 20px;
-}
 
-.hero{
-text-align:center;
-margin-bottom:50px;
-}
-
-.hero h1{
-font-size:40px;
-color:#d4af37;
-letter-spacing:3px;
-}
-
-/* 팔자표 */
-
-.saju-table{
-background:rgba(20,28,47,0.9);
-border-radius:12px;
-padding:20px;
-margin-bottom:30px;
-border:1px solid rgba(212,175,55,0.2);
-}
-
-table{
 width:100%;
-border-collapse:collapse;
+max-width:420px;
+padding:24px;
+
+}
+
+.title{
+
 text-align:center;
+font-size:26px;
+margin-bottom:20px;
+
 }
-
-th{
-color:#d4af37;
-padding:10px;
-}
-
-td{
-padding:15px;
-font-size:22px;
-}
-
-/* 오행 그래프 */
-
-.elementBox{
-background:rgba(20,28,47,0.9);
-border-radius:12px;
-padding:25px;
-margin-bottom:30px;
-}
-
-.elementRow{
-margin-bottom:12px;
-}
-
-.bar{
-height:12px;
-background:#6366f1;
-border-radius:10px;
-}
-
-/* 카드 */
 
 .card{
-background:rgba(20,28,47,0.9);
-border-radius:12px;
-padding:30px;
-margin-bottom:25px;
-border:1px solid rgba(212,175,55,0.2);
+
+background:#0f172a;
+border-radius:16px;
+padding:18px;
+margin-top:14px;
+border:1px solid rgba(99,102,241,0.3);
+
 }
 
-.card h2{
-color:#d4af37;
+.pillars{
+
+display:flex;
+justify-content:space-between;
+font-size:22px;
+margin-top:10px;
+
+}
+
+.pillar{
+
+text-align:center;
+
+}
+
+.shareBox{
+
+display:flex;
+gap:10px;
+margin-top:25px;
+
+}
+
+button{
+
+flex:1;
+padding:14px;
+border:none;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+
+}
+
+.kakao{
+
+background:#FEE500;
+color:black;
+
+}
+
+.imageBtn{
+
+background:#6366f1;
+color:white;
+
 }
 
 </style>
@@ -99,120 +103,206 @@ color:#d4af37;
 
 <body>
 
-<div class="container">
+<div class="container" id="captureArea">
 
-<div class="hero">
-<h1>🔮 지금운 사주 분석 결과</h1>
-</div>
+<div class="title">🔮 나의 사주 분석 결과</div>
 
-<div class="saju-table">
+<div class="card">
 
-<table>
+<h3>사주 팔자</h3>
 
-<tr>
-<th>시주</th>
-<th>일주</th>
-<th>월주</th>
-<th>년주</th>
-</tr>
+<div class="pillars">
 
-<tr>
-<td id="hour">-</td>
-<td id="day">-</td>
-<td id="month">-</td>
-<td id="year">-</td>
-</tr>
+<div class="pillar">
 
-</table>
+년주<br>
+<strong id="year"></strong>
 
 </div>
 
-<div class="elementBox">
+<div class="pillar">
 
-<h3>오행 밸런스</h3>
+월주<br>
+<strong id="month"></strong>
 
-<div class="elementRow">목
-<div class="bar" id="wood"></div>
 </div>
 
-<div class="elementRow">화
-<div class="bar" id="fire"></div>
+<div class="pillar">
+
+일주<br>
+<strong id="day"></strong>
+
 </div>
 
-<div class="elementRow">토
-<div class="bar" id="earth"></div>
-</div>
+<div class="pillar">
 
-<div class="elementRow">금
-<div class="bar" id="metal"></div>
-</div>
+시주<br>
+<strong id="hour"></strong>
 
-<div class="elementRow">수
-<div class="bar" id="water"></div>
 </div>
 
 </div>
 
-<div id="result"></div>
+</div>
+
+<div class="card">
+
+<h3>오행 균형</h3>
+
+<canvas id="fiveChart"></canvas>
 
 </div>
+
+<div id="analysis"></div>
+
+<div class="shareBox">
+
+<button class="kakao" onclick="shareKakao()">카카오 공유</button>
+
+<button class="imageBtn" onclick="downloadImage()">이미지 저장</button>
+
+</div>
+
+</div>
+
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
 
-const rawText = localStorage.getItem("sajuResult");
+Kakao.init("b93117f37a0e66e258cf0dfd07796271");
 
-const sajuData = JSON.parse(localStorage.getItem("sajuData") || "{}");
+//////////////////////////////////////////////////////
 
-document.getElementById("year").innerText = sajuData.year || "-";
-document.getElementById("month").innerText = sajuData.month || "-";
-document.getElementById("day").innerText = sajuData.day || "-";
-document.getElementById("hour").innerText = sajuData.hour || "-";
+const sajuText=localStorage.getItem("sajuResult");
 
-const elements = {
-wood: Math.floor(Math.random()*100),
-fire: Math.floor(Math.random()*100),
-earth: Math.floor(Math.random()*100),
-metal: Math.floor(Math.random()*100),
-water: Math.floor(Math.random()*100)
-};
+const sajuData=JSON.parse(localStorage.getItem("sajuData"));
 
-document.getElementById("wood").style.width = elements.wood+"%";
-document.getElementById("fire").style.width = elements.fire+"%";
-document.getElementById("earth").style.width = elements.earth+"%";
-document.getElementById("metal").style.width = elements.metal+"%";
-document.getElementById("water").style.width = elements.water+"%";
+//////////////////////////////////////////////////////
 
-function render(){
+document.getElementById("year").innerText=sajuData.year;
+document.getElementById("month").innerText=sajuData.month;
+document.getElementById("day").innerText=sajuData.day;
+document.getElementById("hour").innerText=sajuData.hour;
 
-const container = document.getElementById("result");
+//////////////////////////////////////////////////////
+// GPT 결과 표시
+//////////////////////////////////////////////////////
 
-if(!rawText){
-container.innerHTML="<div class='card'>분석 결과 없음</div>";
-return;
-}
+function renderResult(text){
 
-const paragraphs = rawText.split("\n\n");
+const sections=text.split(/\n\d+\./);
 
-paragraphs.forEach((text,index)=>{
+let html="<div class='card'><h3>🔮 사주 정밀 분석</h3>";
 
-if(text.trim()==="") return;
+sections.forEach(section=>{
 
-const card=document.createElement("div");
+if(section.trim().length<20) return;
 
-card.className="card";
+const lines=section.trim().split("\n");
 
-card.innerHTML=`
-<h2>분석 ${index+1}</h2>
-<p>${text}</p>
+const title=lines[0];
+const body=lines.slice(1).join("<br>");
+
+html+=`
+<div style="margin-top:15px">
+<b>${title}</b><br>
+${body}
+</div>
 `;
 
-container.appendChild(card);
+});
+
+html+="</div>";
+
+document.getElementById("analysis").innerHTML=html;
+
+}
+
+renderResult(sajuText);
+
+//////////////////////////////////////////////////////
+// 오행 그래프
+//////////////////////////////////////////////////////
+
+const elementsJSON=localStorage.getItem("elements");
+
+if(elementsJSON){
+
+const elements=JSON.parse(elementsJSON);
+
+const ctx=document.getElementById("fiveChart");
+
+new Chart(ctx,{
+
+type:"radar",
+
+data:{
+labels:["목","화","토","금","수"],
+datasets:[{
+label:"오행",
+data:[
+elements["목"],
+elements["화"],
+elements["토"],
+elements["금"],
+elements["수"]
+]
+}]
+}
 
 });
 
 }
 
-render();
+//////////////////////////////////////////////////////
+// 이미지 저장
+//////////////////////////////////////////////////////
+
+function downloadImage(){
+
+html2canvas(document.querySelector("#captureArea")).then(canvas=>{
+
+const link=document.createElement("a");
+
+link.download="saju_result.png";
+
+link.href=canvas.toDataURL();
+
+link.click();
+
+});
+
+}
+
+//////////////////////////////////////////////////////
+// 카카오 공유
+//////////////////////////////////////////////////////
+
+function shareKakao(){
+
+Kakao.Share.sendDefault({
+
+objectType:"feed",
+
+content:{
+
+title:"🔮 AI 사주 분석 결과",
+
+description:"나의 사주 분석 결과 확인하기",
+
+imageUrl:"https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png",
+
+link:{
+mobileWebUrl:location.origin,
+webUrl:location.origin
+}
+
+}
+
+});
+
+}
 
 </script>
 
