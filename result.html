@@ -8,8 +8,48 @@
 <link rel="stylesheet" href="style.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
-  
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+.hanjaPillars{
+display:flex;
+justify-content:space-between;
+margin-top:15px;
+font-size:34px;
+font-weight:bold;
+color:#facc15;
+text-align:center;
+}
+
+.elementBars{
+margin-top:10px;
+}
+
+.elementRow{
+margin-top:6px;
+}
+
+.bar{
+height:10px;
+border-radius:6px;
+}
+
+.wood{background:#22c55e}
+.fire{background:#ef4444}
+.earth{background:#c2410c}
+.metal{background:#e5e7eb}
+.water{background:#3b82f6}
+
+.daewoonCard{
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+background:rgba(255,255,255,0.04);
+}
+
+</style>
 
 </head>
 
@@ -19,50 +59,56 @@
 
 <div class="title">🔮 나의 사주 분석 결과</div>
 
+<!-- 한자 사주 -->
+
 <div class="card">
 
 <h3>사주 팔자</h3>
 
-<div class="pillars">
+<div class="hanjaPillars">
 
-<div class="pillar">
-년주<br>
-<strong id="year"></strong>
-</div>
-
-<div class="pillar">
-월주<br>
-<strong id="month"></strong>
-</div>
-
-<div class="pillar">
-일주<br>
-<strong id="day"></strong>
-</div>
-
-<div class="pillar">
-시주<br>
-<strong id="hour"></strong>
-</div>
+<div id="hanjaYear"></div>
+<div id="hanjaMonth"></div>
+<div id="hanjaDay"></div>
+<div id="hanjaHour"></div>
 
 </div>
 
 </div>
+
+<!-- 오행 그래프 -->
 
 <div class="card">
+
 <h3>오행 균형</h3>
+
 <canvas id="fiveChart"></canvas>
+
+<div class="elementBars" id="elementBars"></div>
+
 </div>
 
+<!-- 월별 운세 -->
+
 <div class="card">
-<h3>📅 2026년 월별 운세 흐름</h3>
+
+<h3>📅 2026년 월별 운세</h3>
+
 <canvas id="yearChart"></canvas>
+
 </div>
 
+<!-- 대운 -->
+
 <div class="card">
+
 <h3>🌙 대운 흐름</h3>
+
 <div id="luckFlow"></div>
+
 </div>
+
+<!-- GPT 분석 -->
 
 <div id="analysis"></div>
 
@@ -84,64 +130,65 @@
 Kakao.init("b93117f37a0e66e258cf0dfd07796271");
 
 //////////////////////////////////////////////////////
-// 로컬 데이터 불러오기
+// 데이터 불러오기
 //////////////////////////////////////////////////////
 
-const sajuText = localStorage.getItem("sajuResult");
-const sajuData = JSON.parse(localStorage.getItem("sajuData"));
-const elementsJSON = localStorage.getItem("elements");
-const fortuneJSON = localStorage.getItem("fortune");
-const daewoonJSON = localStorage.getItem("daewoon");
-const hanjaJSON = localStorage.getItem("hanja");
+const sajuText = localStorage.getItem("sajuResult")
+const elementsJSON = localStorage.getItem("elements")
+const fortuneJSON = localStorage.getItem("fortune")
+const daewoonJSON = localStorage.getItem("daewoon")
+const hanjaJSON = localStorage.getItem("hanja")
 
 //////////////////////////////////////////////////////
-// 사주 표시
+// 한자 사주 표시
 //////////////////////////////////////////////////////
 
-if(sajuData){
+if(hanjaJSON){
 
-document.getElementById("year").innerText=sajuData.year;
-document.getElementById("month").innerText=sajuData.month;
-document.getElementById("day").innerText=sajuData.day;
-document.getElementById("hour").innerText=sajuData.hour;
+const hanja=JSON.parse(hanjaJSON)
+
+document.getElementById("hanjaYear").innerText=hanja.year
+document.getElementById("hanjaMonth").innerText=hanja.month
+document.getElementById("hanjaDay").innerText=hanja.day
+document.getElementById("hanjaHour").innerText=hanja.hour
 
 }
 
 //////////////////////////////////////////////////////
-// GPT 결과 표시
+// GPT 분석 표시
 //////////////////////////////////////////////////////
 
 function renderResult(text){
 
-const sections=text.split(/\n\d+\./);
+const sections=text.split(/\n\d+\./)
 
-let html="<div class='card'><h3>🔮 사주 정밀 분석</h3>";
+let html="<div class='card'><h3>🔮 사주 정밀 분석</h3>"
 
 sections.forEach(section=>{
 
-if(section.trim().length<20) return;
+if(section.trim().length<20) return
 
-const lines=section.trim().split("\n");
+const lines=section.trim().split("\n")
 
-const title=lines[0];
-const body=lines.slice(1).join("<br>");
+const title=lines[0]
+const body=lines.slice(1).join("<br>")
 
 html+=`
 <div style="margin-top:15px">
 <b>${title}</b><br>
 ${body}
 </div>
-`;
+`
 
-});
+})
 
-html+="</div>";
+html+="</div>"
 
-document.getElementById("analysis").innerHTML=html;
+document.getElementById("analysis").innerHTML=html
 
 }
 
-if(sajuText) renderResult(sajuText);
+if(sajuText) renderResult(sajuText)
 
 //////////////////////////////////////////////////////
 // 오행 그래프
@@ -149,9 +196,9 @@ if(sajuText) renderResult(sajuText);
 
 if(elementsJSON){
 
-const elements=JSON.parse(elementsJSON);
+const elements=JSON.parse(elementsJSON)
 
-const ctx=document.getElementById("fiveChart");
+const ctx=document.getElementById("fiveChart")
 
 new Chart(ctx,{
 
@@ -160,20 +207,52 @@ type:"radar",
 data:{
 labels:["목","화","토","금","수"],
 datasets:[{
-label:"오행 균형",
+label:"오행",
 data:[
-elements.wood || 0,
-elements.fire || 0,
-elements.earth || 0,
-elements.metal || 0,
-elements.water || 0
+elements.wood||0,
+elements.fire||0,
+elements.earth||0,
+elements.metal||0,
+elements.water||0
 ],
-backgroundColor:"rgba(99,102,241,0.2)",
-borderColor:"#6366f1"
+backgroundColor:"rgba(250,204,21,0.2)",
+borderColor:"#facc15"
 }]
 }
 
-});
+})
+
+//////////////////////////////////////////////////////
+// 오행 바 그래프
+//////////////////////////////////////////////////////
+
+let html=""
+
+html+=createBar("목",elements.wood,"wood")
+html+=createBar("화",elements.fire,"fire")
+html+=createBar("토",elements.earth,"earth")
+html+=createBar("금",elements.metal,"metal")
+html+=createBar("수",elements.water,"water")
+
+document.getElementById("elementBars").innerHTML=html
+
+}
+
+function createBar(name,value,cls){
+
+const width=value*20
+
+return`
+
+<div class="elementRow">
+
+${name}
+
+<div class="bar ${cls}" style="width:${width}px"></div>
+
+</div>
+
+`
 
 }
 
@@ -183,14 +262,14 @@ borderColor:"#6366f1"
 
 if(fortuneJSON){
 
-const fortune=JSON.parse(fortuneJSON);
+const fortune=JSON.parse(fortuneJSON)
 
 const months=[
 "1월","2월","3월","4월","5월","6월",
 "7월","8월","9월","10월","11월","12월"
-];
+]
 
-const ctx2=document.getElementById("yearChart");
+const ctx2=document.getElementById("yearChart")
 
 new Chart(ctx2,{
 
@@ -199,7 +278,7 @@ type:"line",
 data:{
 labels:months,
 datasets:[{
-label:"2026 운세 흐름",
+label:"2026 운세",
 data:fortune,
 borderColor:"#facc15",
 backgroundColor:"rgba(250,204,21,0.2)",
@@ -207,7 +286,7 @@ tension:0.3
 }]
 }
 
-});
+})
 
 }
 
@@ -215,35 +294,33 @@ tension:0.3
 // 대운 흐름
 //////////////////////////////////////////////////////
 
-function renderLuck(){
+if(daewoonJSON){
 
-if(!daewoonJSON) return;
+const daewoon=JSON.parse(daewoonJSON)
 
-const daewoon=JSON.parse(daewoonJSON);
-
-let html="";
+let html=""
 
 daewoon.forEach(d=>{
 
 html+=`
 
-<div style="margin-top:12px">
+<div class="daewoonCard">
 
 ${d.ageStart}세 ~ ${d.ageEnd}세
+
 <br>
-<strong>${d.ganji}</strong>
+
+<strong>${d.hanja}</strong>
 
 </div>
 
-`;
+`
 
-});
+})
 
-document.getElementById("luckFlow").innerHTML=html;
+document.getElementById("luckFlow").innerHTML=html
 
 }
-
-renderLuck();
 
 //////////////////////////////////////////////////////
 // 이미지 저장
@@ -253,15 +330,15 @@ function downloadImage(){
 
 html2canvas(document.querySelector("#captureArea")).then(canvas=>{
 
-const link=document.createElement("a");
+const link=document.createElement("a")
 
-link.download="saju_result.png";
+link.download="saju_result.png"
 
-link.href=canvas.toDataURL();
+link.href=canvas.toDataURL()
 
-link.click();
+link.click()
 
-});
+})
 
 }
 
@@ -277,7 +354,7 @@ objectType:"feed",
 
 content:{
 title:"🔮 AI 사주 분석 결과",
-description:"나의 사주 분석 결과 확인하기",
+description:"나의 사주 결과 확인하기",
 imageUrl:"https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png",
 link:{
 mobileWebUrl:location.origin,
@@ -285,7 +362,7 @@ webUrl:location.origin
 }
 }
 
-});
+})
 
 }
 
