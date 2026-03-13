@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+<meta charset="UTF-8">
+<title>지금운 사주 분석 결과</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Nanum Myeongjo', serif;
+background-color:#0b1320;
+background-image:url("https://www.transparenttextures.com/patterns/rice-paper.png");
+color:white;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
+}
+
+.hero{
+text-align:center;
+margin-bottom:50px;
+}
+
+.hero h1{
+font-size:40px;
+color:#d4af37;
+letter-spacing:3px;
+}
+
+.hero p{
+opacity:0.8;
+}
+
+.saju-table{
+background:rgba(20,28,47,0.9);
+border-radius:12px;
+padding:20px;
+margin-bottom:30px;
+border:1px solid rgba(212,175,55,0.2);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+text-align:center;
+}
+
+th{
+color:#d4af37;
+font-size:18px;
+padding:10px;
+}
+
+td{
+padding:15px;
+font-size:22px;
+border-top:1px solid rgba(255,255,255,0.1);
+}
+
+.card{
+background:rgba(20,28,47,0.9);
+border-radius:12px;
+padding:30px;
+margin-bottom:25px;
+box-shadow:0 10px 25px rgba(0,0,0,0.5);
+border:1px solid rgba(212,175,55,0.2);
+}
+
+.card h2{
+margin-top:0;
+color:#d4af37;
+}
+
+.card p{
+line-height:1.8;
+}
+
+.share{
+text-align:center;
+margin-top:40px;
+}
+
+button{
+background:#d4af37;
+border:none;
+padding:12px 25px;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="hero">
+<h1>🔮 지금운 사주 분석 결과</h1>
+<p>명리학 기반 사주 분석 리포트</p>
+</div>
+
+<div class="saju-table">
+
+<table>
+
+<tr>
+<th>시주</th>
+<th>일주</th>
+<th>월주</th>
+<th>년주</th>
+</tr>
+
+<tr>
+<td id="hour">-</td>
+<td id="day">-</td>
+<td id="month">-</td>
+<td id="year">-</td>
+</tr>
+
+</table>
+
+</div>
+
+<div id="result"></div>
+
+<div class="share">
+<h3>결과 공유하기</h3>
+<button onclick="copyLink()">링크 복사</button>
+</div>
+
+</div>
+
+<script>
+
+const rawText = localStorage.getItem("sajuResult");
+
+const sajuData = JSON.parse(localStorage.getItem("sajuData") || "{}");
+
+document.getElementById("year").innerText = sajuData.year || "-";
+document.getElementById("month").innerText = sajuData.month || "-";
+document.getElementById("day").innerText = sajuData.day || "-";
+document.getElementById("hour").innerText = sajuData.hour || "-";
+
+function render(){
+
+const container = document.getElementById("result");
+
+if(!rawText){
+container.innerHTML="<div class='card'><p>분석 결과가 없습니다.</p></div>";
+return;
+}
+
+const paragraphs = rawText.split("\n\n");
+
+paragraphs.forEach((text,index)=>{
+
+if(text.trim()==="") return;
+
+const card = document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+<h2>분석 ${index+1}</h2>
+<p>${text}</p>
+`;
+
+container.appendChild(card);
+
+});
+
+}
+
+function copyLink(){
+
+navigator.clipboard.writeText(window.location.href);
+
+alert("링크가 복사되었습니다");
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
