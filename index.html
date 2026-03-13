@@ -3,7 +3,10 @@
 <head>
 
 <meta charset="UTF-8">
-<title>지금운 | 2026년 재물 흐름 분석</title>
+<title>지금운 | AI 사주 재물 분석</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://js.tosspayments.com/v1"></script>
 
 <style>
 
@@ -41,14 +44,12 @@ margin-bottom:25px;
 
 .hero h2{
 font-size:20px;
-margin-bottom:10px;
 color:#22d3ee;
 }
 
 .hero p{
 font-size:14px;
 color:#cbd5e1;
-line-height:1.6;
 }
 
 .input-group{
@@ -105,7 +106,6 @@ background:#111827;
 padding:18px;
 border-radius:16px;
 margin-top:15px;
-border:1px solid rgba(99,102,241,0.5);
 text-align:center;
 }
 
@@ -121,31 +121,12 @@ font-weight:bold;
 color:#facc15;
 }
 
-.limit{
-font-size:12px;
-color:#f87171;
-margin-top:5px;
-}
-
-.feature{
-font-size:13px;
-color:#cbd5e1;
-margin-top:10px;
-line-height:1.6;
-}
-
 .footer{
 margin-top:40px;
 font-size:12px;
 color:#94a3b8;
 text-align:center;
 line-height:1.6;
-}
-
-.footer a{
-color:#22d3ee;
-text-decoration:none;
-margin:0 5px;
 }
 
 </style>
@@ -157,20 +138,18 @@ margin:0 5px;
 <div class="container">
 
 <h1>🔮 지금운</h1>
-<div class="subtitle">AI 사주 기반 2026년 재물 흐름 분석</div>
+<div class="subtitle">AI 사주 기반 재물 흐름 분석</div>
 
 <div class="hero">
 
-<h2>올해 돈의 흐름이 바뀌는 시점은 언제입니까?</h2>
+<h2>올해 재물 흐름을 확인하세요</h2>
 
 <p>
-30~50대는 운의 방향이 곧 재산의 방향입니다.<br>
-지금 선택이 3년 뒤 격차를 만듭니다.
+사주 기반 AI 분석으로<br>
+2026년 재물 흐름을 확인할 수 있습니다.
 </p>
 
 </div>
-
-<!-- 입력 -->
 
 <div class="input-group">
 <label>생년월일</label>
@@ -192,9 +171,9 @@ margin:0 5px;
 </select>
 </div>
 
-<button id="freeBtn" class="primary">무료 재물 흐름 확인하기</button>
-
-<!-- 무료 결과 -->
+<button id="freeBtn" class="primary">
+무료 재물 흐름 확인하기
+</button>
 
 <div id="result" class="card" style="display:none;">
 
@@ -202,51 +181,41 @@ margin:0 5px;
 
 <p id="mainLuck"></p>
 
+<h4>📈 재물 흐름 미리보기</h4>
+
+<canvas id="previewChart"></canvas>
+
 <div class="priceBox">
 
-<div class="oldPrice">정상가 9,900원</div>
+<div class="oldPrice">정가 9,900원</div>
 
 <div class="newPrice">오늘 한정 4,900원</div>
-
-<div class="limit">※ 디지털 콘텐츠 상품</div>
-
-<div class="feature">
-✔ 사주 팔자 분석<br>
-✔ 오행 균형 분석<br>
-✔ 2026년 월별 운세 그래프<br>
-✔ 대운 흐름 분석<br>
-✔ AI 직업 추천
-</div>
 
 </div>
 
 <button id="paymentBtn" class="primary">
-🔓 지금 전체 분석 보기 (4,900원)
+전체 분석 보기 (4,900원)
 </button>
 
 </div>
 
-<!-- 후기 -->
-
 <div class="card">
 
-<h4>⭐ 실제 이용 후기</h4>
+<h4>⭐ 실제 후기</h4>
 
 <div class="reviewCard">
-★★★★★ “6월 계약 진짜 터졌습니다.”
-</div>
-
-<div class="reviewCard">
-★★★★★ “사업 확장 시점 정확했습니다.”
+★★★★★ 6월 계약이 실제로 성사됐습니다.
 </div>
 
 <div class="reviewCard">
-★★★★★ “생각보다 너무 정확해서 놀랐습니다.”
+★★★★★ 생각보다 정확해서 놀랐습니다.
+</div>
+
+<div class="reviewCard">
+★★★★★ 사업 방향 결정에 도움됐습니다.
 </div>
 
 </div>
-
-<!-- 회사 정보 -->
 
 <div class="footer">
 
@@ -254,26 +223,15 @@ margin:0 5px;
 대표자: 김성일<br>
 사업자등록번호: 383-25-01493<br>
 통신판매업신고번호: 2026-광주북구-0121<br>
-고객문의: kmatin0035@gmail.com<br><br>
-
-<a href="/terms.html">이용약관</a> |
-<a href="/privacy.html">개인정보처리방침</a>
-
-<br><br>
-
-※ 본 서비스는 디지털 콘텐츠 상품으로 결제 즉시 내용이 제공됩니다.<br>
-전자상거래법 제17조 제2항에 따라 콘텐츠 제공이 시작된 경우<br>
-청약철회가 제한됩니다.
+문의: kmatin0035@gmail.com
 
 </div>
 
 </div>
-
-<script src="https://js.tosspayments.com/v1"></script>
 
 <script>
 
-const paymentBtn=document.getElementById("paymentBtn");
+let chart;
 
 document.getElementById("freeBtn").addEventListener("click",()=>{
 
@@ -287,19 +245,23 @@ alert("생년월일과 성별을 입력해주세요.");
 return;
 }
 
-const time = timeUnknown ? "모름" : timeInput;
+const time=timeUnknown?"모름":timeInput;
+
+localStorage.setItem("birth",birth);
+localStorage.setItem("time",time);
+localStorage.setItem("gender",gender);
 
 const freeResults=[
 
-"현재 재물 흐름은 정체에서 전환으로 넘어가는 구간입니다. 하반기 선택이 향후 2~3년 재산 흐름을 크게 바꿀 수 있습니다.",
+"현재 재물 흐름은 전환기로 새로운 기회가 열릴 수 있습니다.",
 
-"2026년은 기존 재물 구조를 정리하고 새로운 방향을 설정하는 재편기입니다.",
+"올해는 기존 재물 구조를 정리하는 시기입니다.",
 
-"현재 운의 구조는 급격한 상승보다는 기반을 단단히 만드는 흐름입니다.",
+"재물 흐름이 점차 상승하는 구조입니다.",
 
-"지금 시기는 인생의 재물 구조가 재배치되는 흐름입니다.",
+"지금 시기는 기반을 만드는 흐름입니다.",
 
-"현재 운의 흐름은 선택의 질이 결과를 크게 좌우하는 시기입니다."
+"선택에 따라 결과 차이가 커지는 시기입니다."
 
 ];
 
@@ -308,31 +270,60 @@ const randomIndex=Math.floor(Math.random()*freeResults.length);
 document.getElementById("result").style.display="block";
 document.getElementById("mainLuck").innerText=freeResults[randomIndex];
 
-localStorage.setItem("birth",birth);
-localStorage.setItem("time",time);
-localStorage.setItem("gender",gender);
+const data=[
+
+Math.floor(Math.random()*50)+30,
+Math.floor(Math.random()*50)+30,
+Math.floor(Math.random()*50)+30,
+Math.floor(Math.random()*50)+30,
+Math.floor(Math.random()*50)+30,
+Math.floor(Math.random()*50)+30
+
+];
+
+const ctx=document.getElementById("previewChart").getContext("2d");
+
+if(chart) chart.destroy();
+
+chart=new Chart(ctx,{
+type:"line",
+data:{
+labels:["1월","3월","5월","7월","9월","11월"],
+datasets:[{
+label:"재물 흐름",
+data:data,
+borderWidth:2
+}]
+}
+});
 
 });
 
-paymentBtn.addEventListener("click",()=>{
+document.getElementById("paymentBtn").addEventListener("click",()=>{
 
 const birth=localStorage.getItem("birth");
-const gender=localStorage.getItem("gender");
 
-if(!birth || !gender){
-alert("먼저 무료 흐름을 확인해주세요.");
+if(!birth){
+alert("먼저 무료 분석을 실행해주세요.");
 return;
 }
 
-const toss=TossPayments("test_ck_GjLJoQ1aVZ21ybq9bjRJVw6KYe2R");
+const toss=new TossPayments("test_ck_GjLJoQ1aVZ21ybq9bjRJVw6KYe2R");
 
 toss.requestPayment("카드",{
+
 amount:4900,
+
 orderId:"order_"+Date.now(),
-orderName:"지금운 정밀 분석",
+
+orderName:"지금운 사주 분석",
+
 customerName:"고객",
+
 successUrl:location.origin+"/success.html",
+
 failUrl:location.origin
+
 });
 
 });
