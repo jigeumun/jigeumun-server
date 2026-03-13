@@ -147,7 +147,7 @@ throw new Error("결제 검증 실패");
 }
 
 document.getElementById("result").innerHTML=
-"<h3>결제가 완료되었습니다 ✅</h3><p>AI가 사주를 분석하고 있습니다...</p>";
+"<h3>결제가 완료되었습니다 ✅</h3><p>사주를 분석하고 있습니다...</p>";
 
 const saju=await fetch("/api/saju",{
 method:"POST",
@@ -317,7 +317,7 @@ Kakao.Share.sendDefault({
 objectType:"feed",
 content:{
 title:"🔮 지금운 사주 분석 결과",
-description:"AI가 분석한 나의 2026년 운세 결과",
+description:"지금운이 분석한 나의 2026년 운세 결과",
 imageUrl:generatedImage || "https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png",
 link:{
 mobileWebUrl:location.origin,
