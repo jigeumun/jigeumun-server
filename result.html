@@ -99,6 +99,13 @@ background:#6366f1;
 color:white;
 }
 
+.compatBtn{
+background:#22c55e;
+color:white;
+width:100%;
+margin-top:10px;
+}
+
 </style>
 
 </head>
@@ -138,7 +145,7 @@ color:white;
 
 </div>
 
-<!-- 월별 -->
+<!-- 월별 운세 -->
 
 <div class="card">
 
@@ -161,6 +168,28 @@ color:white;
 <!-- GPT 분석 -->
 
 <div id="analysis"></div>
+
+<!-- 친구 궁합 -->
+
+<div class="card">
+
+<h3>💞 친구와 궁합 보기</h3>
+
+<p style="font-size:13px;color:#94a3b8">
+친구 생년월일을 입력하면 간단한 궁합을 확인할 수 있습니다.
+</p>
+
+<input type="date" id="friendBirth" style="width:100%;padding:10px;border-radius:8px;border:none">
+
+<button class="compatBtn" onclick="checkCompatibility()">
+궁합 확인하기
+</button>
+
+<div id="compatibilityResult" style="margin-top:10px;font-size:14px"></div>
+
+</div>
+
+<!-- 공유 -->
 
 <div class="shareBox">
 
@@ -197,10 +226,10 @@ if(hanjaJSON){
 
 const hanja=JSON.parse(hanjaJSON)
 
-document.getElementById("hanjaYear").innerText=hanja.year || "-"
-document.getElementById("hanjaMonth").innerText=hanja.month || "-"
-document.getElementById("hanjaDay").innerText=hanja.day || "-"
-document.getElementById("hanjaHour").innerText=hanja.hour || "-"
+document.getElementById("hanjaYear").innerText=hanja.year||"-"
+document.getElementById("hanjaMonth").innerText=hanja.month||"-"
+document.getElementById("hanjaDay").innerText=hanja.day||"-"
+document.getElementById("hanjaHour").innerText=hanja.hour||"-"
 
 }
 
@@ -277,10 +306,6 @@ borderColor:"#facc15"
 
 })
 
-//////////////////////////////////////////////////////
-// 오행 바
-//////////////////////////////////////////////////////
-
 let html=""
 
 html+=createBar("목",elements.wood,"wood")
@@ -322,10 +347,8 @@ if(fortuneJSON){
 const fortune=JSON.parse(fortuneJSON)
 
 const months=[
-
 "1월","2월","3월","4월","5월","6월",
 "7월","8월","9월","10월","11월","12월"
-
 ]
 
 const ctx2=document.getElementById("yearChart")
@@ -378,6 +401,35 @@ ${d.ageStart}세 ~ ${d.ageEnd}세
 })
 
 document.getElementById("luckFlow").innerHTML=html
+
+}
+
+//////////////////////////////////////////////////////
+// 친구 궁합
+//////////////////////////////////////////////////////
+
+function checkCompatibility(){
+
+const friendBirth=document.getElementById("friendBirth").value
+
+if(!friendBirth){
+alert("친구 생년월일을 입력해주세요.")
+return
+}
+
+const results=[
+
+"🌟 서로 보완되는 궁합입니다.",
+"🔥 성향 차이가 있지만 서로 자극이 되는 관계입니다.",
+"💰 재물이나 일에서 협력하면 좋은 궁합입니다.",
+"🌙 감정적으로 안정감을 줄 수 있는 관계입니다.",
+"⚡ 경쟁심이 생길 수 있는 궁합입니다."
+
+]
+
+const random=Math.floor(Math.random()*results.length)
+
+document.getElementById("compatibilityResult").innerText=results[random]
 
 }
 
