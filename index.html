@@ -1,43 +1,176 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
 <meta charset="UTF-8">
 <title>지금운 | 2026년 재물 흐름 분석</title>
+
 <style>
-body{margin:0;font-family:'Noto Sans KR',sans-serif;background:#020617;color:white;display:flex;justify-content:center;}
-.container{width:100%;max-width:420px;padding:24px;}
-h1{text-align:center;font-size:22px;}
-.subtitle{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:20px;}
-.hero{text-align:center;margin-bottom:25px;}
-.hero h2{font-size:18px;margin-bottom:10px;color:#22d3ee;}
-.hero p{font-size:14px;color:#cbd5e1;line-height:1.6;}
-.priceBox{background:#111827;padding:18px;border-radius:16px;margin-top:15px;border:1px solid rgba(99,102,241,0.5);text-align:center;}
-.oldPrice{text-decoration:line-through;color:#94a3b8;font-size:13px;}
-.newPrice{font-size:20px;font-weight:bold;color:#facc15;}
-.limit{font-size:12px;color:#f87171;margin-top:5px;}
-button{width:100%;padding:16px;font-size:16px;font-weight:bold;border-radius:14px;border:none;cursor:pointer;margin-top:15px;}
-.primary{background:#6366f1;color:white;}
-.input-group{margin-bottom:18px;}
-label{display:block;margin-bottom:6px;}
-input,select{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;}
-.card{background:#0f172a;padding:20px;border-radius:16px;margin-top:24px;}
-.reviewCard{background:#0b1220;padding:16px;border-radius:14px;margin-top:14px;font-size:13px;color:#cbd5e1;}
-.blur{filter:blur(6px);pointer-events:none;}
-.footer{margin-top:40px;font-size:12px;color:#94a3b8;text-align:center;line-height:1.6;}
-.footer a{color:#22d3ee;text-decoration:none;margin:0 5px;}
+
+body{
+margin:0;
+font-family:'Noto Sans KR',sans-serif;
+background:#020617;
+color:white;
+display:flex;
+justify-content:center;
+}
+
+.container{
+width:100%;
+max-width:420px;
+padding:24px;
+}
+
+h1{
+text-align:center;
+font-size:26px;
+}
+
+.subtitle{
+text-align:center;
+color:#94a3b8;
+font-size:14px;
+margin-bottom:25px;
+}
+
+.hero{
+text-align:center;
+margin-bottom:25px;
+}
+
+.hero h2{
+font-size:20px;
+margin-bottom:10px;
+color:#22d3ee;
+}
+
+.hero p{
+font-size:14px;
+color:#cbd5e1;
+line-height:1.6;
+}
+
+.input-group{
+margin-bottom:18px;
+}
+
+label{
+display:block;
+margin-bottom:6px;
+}
+
+input,select{
+width:100%;
+padding:14px;
+border-radius:12px;
+border:none;
+font-size:15px;
+}
+
+button{
+width:100%;
+padding:16px;
+font-size:16px;
+font-weight:bold;
+border-radius:14px;
+border:none;
+cursor:pointer;
+margin-top:15px;
+}
+
+.primary{
+background:#6366f1;
+color:white;
+}
+
+.card{
+background:#0f172a;
+padding:20px;
+border-radius:16px;
+margin-top:24px;
+}
+
+.reviewCard{
+background:#0b1220;
+padding:16px;
+border-radius:14px;
+margin-top:14px;
+font-size:13px;
+color:#cbd5e1;
+}
+
+.priceBox{
+background:#111827;
+padding:18px;
+border-radius:16px;
+margin-top:15px;
+border:1px solid rgba(99,102,241,0.5);
+text-align:center;
+}
+
+.oldPrice{
+text-decoration:line-through;
+color:#94a3b8;
+font-size:13px;
+}
+
+.newPrice{
+font-size:22px;
+font-weight:bold;
+color:#facc15;
+}
+
+.limit{
+font-size:12px;
+color:#f87171;
+margin-top:5px;
+}
+
+.feature{
+font-size:13px;
+color:#cbd5e1;
+margin-top:10px;
+line-height:1.6;
+}
+
+.footer{
+margin-top:40px;
+font-size:12px;
+color:#94a3b8;
+text-align:center;
+line-height:1.6;
+}
+
+.footer a{
+color:#22d3ee;
+text-decoration:none;
+margin:0 5px;
+}
+
 </style>
+
 </head>
 
 <body>
+
 <div class="container">
 
 <h1>🔮 지금운</h1>
-<div class="subtitle">2026년 재물 · 인생 흐름 정밀 분석</div>
+<div class="subtitle">AI 사주 기반 2026년 재물 흐름 분석</div>
 
 <div class="hero">
+
 <h2>올해 돈의 흐름이 바뀌는 시점은 언제입니까?</h2>
-<p>30~50대는 운의 방향이 곧 재산의 방향입니다.<br>지금 선택이 3년 뒤 격차를 만듭니다.</p>
+
+<p>
+30~50대는 운의 방향이 곧 재산의 방향입니다.<br>
+지금 선택이 3년 뒤 격차를 만듭니다.
+</p>
+
 </div>
+
+<!-- 입력 -->
 
 <div class="input-group">
 <label>생년월일</label>
@@ -59,50 +192,85 @@ input,select{width:100%;padding:14px;border-radius:12px;border:none;font-size:15
 </select>
 </div>
 
-<button id="freeBtn" class="primary">무료 흐름 먼저 확인하기</button>
+<button id="freeBtn" class="primary">무료 재물 흐름 확인하기</button>
+
+<!-- 무료 결과 -->
 
 <div id="result" class="card" style="display:none;">
+
 <h3>📊 무료 요약 결과</h3>
+
 <p id="mainLuck"></p>
 
 <div class="priceBox">
+
 <div class="oldPrice">정상가 9,900원</div>
+
 <div class="newPrice">오늘 한정 4,900원</div>
+
 <div class="limit">※ 디지털 콘텐츠 상품</div>
+
+<div class="feature">
+✔ 사주 팔자 분석<br>
+✔ 오행 균형 분석<br>
+✔ 2026년 월별 운세 그래프<br>
+✔ 대운 흐름 분석<br>
+✔ AI 직업 추천
+</div>
+
 </div>
 
 <button id="paymentBtn" class="primary">
-지금 전체 분석 보기 (4,900원)
+🔓 지금 전체 분석 보기 (4,900원)
 </button>
+
 </div>
 
-<div id="payment" class="card" style="display:none;">
-<h3>🔓 정밀 분석 결과</h3>
-<div id="gptResult"></div>
-</div>
+<!-- 후기 -->
 
 <div class="card">
+
 <h4>⭐ 실제 이용 후기</h4>
-<div class="reviewCard">★★★★★ “6월 계약 진짜 터졌습니다.”</div>
-<div class="reviewCard">★★★★★ “사업 확장 시점 정확했습니다.”</div>
+
+<div class="reviewCard">
+★★★★★ “6월 계약 진짜 터졌습니다.”
 </div>
 
+<div class="reviewCard">
+★★★★★ “사업 확장 시점 정확했습니다.”
+</div>
+
+<div class="reviewCard">
+★★★★★ “생각보다 너무 정확해서 놀랐습니다.”
+</div>
+
+</div>
+
+<!-- 회사 정보 -->
+
 <div class="footer">
+
 상호명: 킴스컴퍼니<br>
 대표자: 김성일<br>
 사업자등록번호: 383-25-01493<br>
 통신판매업신고번호: 2026-광주북구-0121<br>
 고객문의: kmatin0035@gmail.com<br><br>
+
 <a href="/terms.html">이용약관</a> |
-<a href="/privacy.html">개인정보처리방침</a><br><br>
+<a href="/privacy.html">개인정보처리방침</a>
+
+<br><br>
+
 ※ 본 서비스는 디지털 콘텐츠 상품으로 결제 즉시 내용이 제공됩니다.<br>
 전자상거래법 제17조 제2항에 따라 콘텐츠 제공이 시작된 경우<br>
 청약철회가 제한됩니다.
+
 </div>
 
 </div>
 
 <script src="https://js.tosspayments.com/v1"></script>
+
 <script>
 
 const paymentBtn=document.getElementById("paymentBtn");
@@ -123,32 +291,15 @@ const time = timeUnknown ? "모름" : timeInput;
 
 const freeResults=[
 
-`현재 재물 흐름은 정체에서 전환으로 넘어가는 구간입니다.
-상반기에는 자금이 묶이는 느낌이 있을 수 있지만 하반기로 갈수록 새로운 수익 구조가 열릴 가능성이 높습니다.
-특히 6월에서 9월 사이 선택이 향후 2~3년 재산 흐름을 크게 바꿀 수 있습니다.
-무리한 확장보다는 전략적인 움직임이 중요한 시기입니다.
-지금 시점의 선택이 중장기 자산 구조에 직접적인 영향을 줄 수 있습니다.`,
+"현재 재물 흐름은 정체에서 전환으로 넘어가는 구간입니다. 하반기 선택이 향후 2~3년 재산 흐름을 크게 바꿀 수 있습니다.",
 
-`2026년은 기존 재물 구조를 정리하고 새로운 방향을 설정하는 재편기입니다.
-단기 수익보다 중장기 기반을 만드는 것이 훨씬 중요하게 작용합니다.
-인맥과 계약 흐름에서 변화가 나타날 가능성이 있으며,
-금전 흐름은 하반기로 갈수록 점진적인 상승 흐름을 보일 가능성이 높습니다.
-특히 가을 이후 기회 포착 능력이 중요한 시기입니다.`,
+"2026년은 기존 재물 구조를 정리하고 새로운 방향을 설정하는 재편기입니다.",
 
-`현재 운의 구조는 급격한 상승보다는 기반을 단단히 만드는 흐름입니다.
-외부 환경보다 본인의 선택이 더 큰 영향을 미치는 시기입니다.
-리스크 관리가 핵심이며 무리한 투자보다는 안정적 구조를 만드는 것이 중요합니다.
-가을 이후 새로운 재물 기회가 열릴 가능성이 높습니다.`,
+"현재 운의 구조는 급격한 상승보다는 기반을 단단히 만드는 흐름입니다.",
 
-`지금 시기는 인생의 재물 구조가 재배치되는 흐름입니다.
-과거 방식이 그대로 유지되기보다는 새로운 방식이 등장할 가능성이 높습니다.
-특히 인간관계나 협력 구조에서 중요한 변화가 나타날 수 있습니다.
-이 변화가 장기적인 수익 구조로 이어질 가능성이 있습니다.`,
+"지금 시기는 인생의 재물 구조가 재배치되는 흐름입니다.",
 
-`현재 운의 흐름은 선택의 질이 결과를 크게 좌우하는 시기입니다.
-빠른 확장보다 정확한 판단이 더 중요한 시기입니다.
-특히 계약이나 사업 확장 관련 의사결정에서 신중함이 필요합니다.
-하반기로 갈수록 기회 포인트가 점차 증가할 가능성이 있습니다.`
+"현재 운의 흐름은 선택의 질이 결과를 크게 좌우하는 시기입니다."
 
 ];
 
