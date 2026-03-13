@@ -133,11 +133,32 @@ body:JSON.stringify({birth,time,gender})
 
 const sajuData=await saju.json();
 
+/* 🔽 여기 추가된 코드 */
+
+localStorage.setItem("sajuResult", sajuData.result);
+
+localStorage.setItem("sajuData", JSON.stringify({
+year:"-",
+month:"-",
+day:"-",
+hour:"-"
+}));
+
+/* 🔼 여기까지 */
+
 renderResult(sajuData.result);
 
 document.getElementById("shareArea").style.display="flex";
 
 setTimeout(generateImage,1000);
+
+/* 🔽 3초 후 결과 페이지 이동 */
+
+setTimeout(()=>{
+location.href="/result.html";
+},3000);
+
+/* 🔼 */
 
 }catch(err){
 
